@@ -3,9 +3,9 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 
-\title{Problem Statement and Goals\\\progname}
+\title{Problem Statement and Goals\\\ Numerical Integration of Flocking Dynamics over Structured Terrains}
 
-\author{\authname}
+\author{\ Yibing Mei}
 
 \date{}
 
@@ -22,72 +22,87 @@
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date1 & Name(s) & Description of changes\\
-Date2 & Name(s) & Description of changes\\
-... & ... & ...\\
+2026/01/16 & Yibing Mei & Initial upload\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \section{Problem Statement}
 
-\wss{You should check your problem statement with the
-\href{https://smiths.github.io/capTemplate/Checklists/ProbState-Checklist.pdf}
-{problem statement checklist}}. 
-
-\wss{You can change the section headings, as long as you include the required
-information.}
-
 \subsection{Problem}
+
+This project simulates flocking dynamics over structured terrains with features such as obstacles and narrow passages. 
+It compares multiple numerical integration methods to evaluate their effects on stability, coherence, long-term behavior, 
+and the success rate of passing complex environments. The results are visualized through animations to support analysis 
+and help identify methods that better meet the needs of the relevant stakeholders, such as greater group cohesion.
+
 
 \subsection{Inputs and Outputs}
 
-\wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
-Use abstraction so that you can avoid details.}
+Input: Users can configure key simulation parameters, including the number of agents, the numerical integration method, 
+and the layout of obstacles. \\
+Output: The simulation generates animations of agent-based flocking behavior over the structured terrain. In addition, 
+it produces time-series curves for stability, coherence, and group cohesion throughout the simulation, as well as the 
+final rate of passing through the terrain for all agents.
+
 
 \subsection{Stakeholders}
 
+The primary stakeholders of this project are researchers and students in scientific computing and applied mathematics who 
+use numerical simulations to study collective dynamics. The results may also be of interest to researchers working on 
+flocking, swarm dynamics, and multi-agent systems, such as those in swarm robotics, particularly in the simulations 
+involving complex environments. Additionally, those working in biological collective behavior modeling, traffic flow, 
+environmental and geographic modeling, and crowd animation may require large-scale agent-based simulation results for 
+their studies.
+
+
 \subsection{Environment}
 
-\wss{Hardware and Software Environment for the users.  The developer environment
-is summarized as part of the developer plan.}
+The simulation is designed to run on a standard desktop or laptop environment. Users should have a system with Windows 
+10 or 11, and interaction with the simulation, such as adjusting parameters and controlling the visualization, is 
+performed via keyboard and mouse.
+
 
 \section{Goals}
 
+\subsection{Implement multiple numerical integration methods}
+Implement commonly used methods such as Euler, Runge-Kutta, etc.
+
+\subsection{Enable user-defined terrains}
+Allow users to configure obstacles and terrain features, and simulate agent flocking behavior.
+
+\subsection{Compute and visualize key metrics over time}
+Calculate stability, coherence, and group cohesion in real time for each integration method, generate their time-series curves, 
+and compute the final navigation success rate.
+
+\subsection{Support comparison of multiple methods}
+Allow users to run simulations with different methods on the same terrain and generate comparative metric curves.
+
+\subsection{Export the simulation as animation}
+Support exporting the flocking process into an animation file for further analysis or presentation.
+
+
 \section{Stretch Goals}
 
-\wss{Goals you hope to get to, but not necessary.  They are also helpful if the
-scope of the original project needs to be expanded.}
+\subsection{Support real-time animation of the simulation}
+Display agent flocking behavior dynamically during the simulation for interactive observation.
+
+\subsection{Handle very large numbers of agents}
+Enable simulation with tens of thousands of agents efficiently.
+
+\subsection{Extend simulation from 2D to 3D}
+Allow agents to navigate and visualize flocking behavior in 3D terrains.
+
+\subsection{Enable tracking of individual agents}
+Support focusing on and observing the behavior of a single agent within the flock.
+
 
 \section{Extras}
 
-\wss{For CAS 741: State whether the project is a research project. This
-designation, with the approval (or request) of the instructor, can be modified
-over the course of the term.}
-
-\wss{For SE Capstone: List your extras.  Potential extras include usability
-testing, code walkthroughs, user documentation, formal proof, GenderMag
-personas, Design Thinking, etc.  (The full list is on the course outline and in
-Lecture 02.) Normally the number of extras will be two.  Approval of the extras
-will be part of the discussion with the instructor for approving the project.
-The extras, with the approval (or request) of the instructor, can be modified
-over the course of the term.}
-
-\newpage{}
-
-\section*{Appendix --- Reflection}
-
-\wss{Not required for CAS 741}
-
-\input{../Reflection.text}
-
-\begin{enumerate}
-    \item What went well while writing this deliverable? 
-    \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
-    \item How did you and your team adjust the scope of your goals to ensure
-    they are suitable for a Capstone project (not overly ambitious but also of
-    appropriate complexity for a senior design project)?
-\end{enumerate}  
+This project is a research project. \\
+The goal is to identify numerical integration methods that lead to more stable and coherent flocking behavior over 
+structured terrains. By implementing and comparing those methods under non-standard environmental settings, the project 
+aims to analyze differences in flocking dynamics that are not known a priori, rather than merely reproducing a fixed 
+simulation outcome.
 
 \end{document}

@@ -2,4 +2,4 @@
 
 The folders and files for this folder are as follows:
 
-Describe ...
+ProblemStatement.tex - This document outlines the project description and goals.
