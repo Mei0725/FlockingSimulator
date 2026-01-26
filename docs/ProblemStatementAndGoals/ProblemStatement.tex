@@ -16,31 +16,22 @@
 
 \maketitle
 
-\begin{table}[hp]
-\caption{Revision History} \label{TblRevisionHistory}
-\begin{tabularx}{\textwidth}{llX}
-\toprule
-\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
-\midrule
-2026/01/16 & Yibing Mei & Initial upload\\
-\bottomrule
-\end{tabularx}
-\end{table}
-
 \section{Problem Statement}
 
 \subsection{Problem}
 
-This project simulates flocking dynamics over structured terrains with features such as obstacles and narrow passages. 
-It compares multiple numerical integration methods to evaluate their effects on stability, coherence, long-term behavior, 
-and the success rate of passing complex environments. The results are visualized through animations to support analysis 
-and help identify methods that better meet the needs of the relevant stakeholders, such as greater group cohesion.
+This project simulates flocking dynamics over structured terrains with features such as obstacles and narrow passages, 
+as such models are widely used to represent collective behavior in biological systems, robotics, and other multi-agent 
+applications. It compares multiple numerical integration methods to evaluate their effects on stability, coherence, 
+long-term behavior, and the success rate of passing complex environments. The results are visualized through animations 
+to support analysis and help identify methods that better meet the needs of the relevant stakeholders, such as greater 
+group cohesion.
 
 
 \subsection{Inputs and Outputs}
 
-Input: Users can configure key simulation parameters, including the number of agents, the numerical integration method, 
-and the layout of obstacles. \\
+Input: Users can configure key simulation parameters, including the length of timestep, the parameters of collective 
+modules, the number of agents, the numerical integration method, and the layout of obstacles. \\
 Output: The simulation generates animations of agent-based flocking behavior over the structured terrain. In addition, 
 it produces time-series curves for stability, coherence, and group cohesion throughout the simulation, as well as the 
 final rate of passing through the terrain for all agents.
@@ -58,9 +49,9 @@ their studies.
 
 \subsection{Environment}
 
-The simulation is designed to run on a standard desktop or laptop environment. Users should have a system with Windows 
-10 or 11, and interaction with the simulation, such as adjusting parameters and controlling the visualization, is 
-performed via keyboard and mouse.
+Users are expected to have Unity version 2022 installed on their system to import, build, and run the project. And 
+interaction with the simulation, such as adjusting parameters and controlling the visualization, is performed via 
+keyboard and mouse.
 
 
 \section{Goals}
