@@ -216,6 +216,7 @@ $k_o$  & \si{\kilogram\metre\squared\per\second\squared} & The weighting coeffic
 $k_s$  & \si{\kilogram\metre\squared\per\second\squared} & The weighting coefficient of separation forces \\
 $N$ & -- & The total number of agent in the flocking model \\
 $\mathbf{m}$ & \si{\kilogram} & The mass of agent \\
+$\mathbf{M}$ & - & The selected numerical integration method \\
 $\mathcal{N}_i$ & -- & The set of agents excluding agent \textit{i} \\
 $\mathcal{O}$ & -- & The set of obstacles \\
 $\mathcal{O}_k$ & -- & One of the obstacle in the obstacle set \\
@@ -249,6 +250,9 @@ $\bar{v}_\mathbf{t}$ & \si{\metre\per\second} & The mean speed of flocking at ti
   R & Requirement\\
   SRS & Software Requirements Specification\\
   TM & Theoretical Model\\
+  EEuler & Explicit Euler\\
+  RK4 & Runge-Kutta 4\\
+  SIEuler & Semi-Implicit Euler\\
   \bottomrule
 \end{tabular}\\
 
@@ -1154,6 +1158,7 @@ Table~\ref{TblSpecParams}.
   \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
                              \textbf{Typical Value} & \textbf{Uncertainty}\\
   \midrule 
+  $\mathbf{M}$ & - & $\mathbf{M} \in \{\text{EEuler}, \text{RK4}, \text{SIEuler}\}$ & $\text{SIEuler}$ & 0\\
   $N$ & $N \geq 0$ & $N^{\text{min}} \leq N \leq N^{\text{max}}$ & 100 & 0\\
   $\Delta t$ & $\Delta t > 0$ & ${\Delta t}^{\text{min}} \leq \Delta t \leq {\Delta t}^{\text{max}}$ & 0.01 & 0\\
   $k_a$ & $k_a \geq 0$ & $k^{\text{min}} \leq k_a \leq k^{\text{max}}$ & 0.5 & 0\\
