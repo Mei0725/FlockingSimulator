@@ -431,7 +431,7 @@ analysis and unit tests. In this context, the functional test cases for
 flocking dynamics focus on verifying the overall trends and expected behaviors 
 of the agents rather than exact numerical values.
 
-\paragraph{Input Tests for Integration Methods}
+\paragraph{Test of Motion Logic}
 
 \begin{enumerate}
 \item{two-agent-symmetric-motion\\} \label{symmetricTest}
@@ -466,7 +466,7 @@ any given moment affects its subsequent states, so the longer the simulation
 runs, the larger the deviation may become.
 
 \begin{longtable}{c c c c c c c c c c}
-\caption{Initial Flocking Parameters} \label{TblMotionTest1} \\
+\caption{Input of two-agent-symmetric-motion} \label{TblMotionTest1} \\
 \hline
 $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
 \hline
@@ -506,7 +506,7 @@ Similar to \ref{symmetricTest}, this test may also exhibit deviations due to
 floating-point computations.
 
 \begin{longtable}{c c c c c c c c c c}
-\caption{Initial Flocking Parameters} \label{TblMotionTest2} \\
+\caption{Input of single-weight-zero} \label{TblMotionTest2} \\
 \hline
 $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
 \hline
@@ -551,7 +551,7 @@ be computed based on the dynamical model in \citet{OlfatiFlocking2006}, or
 set as a fixed value as done in \citet{AndrewFlocking2011}.
 
 \begin{longtable}{c c c c c c c c c c}
-\caption{Initial Flocking Parameters} \label{TblBoundTest1} \\
+\caption{Input of maximum-velocity-verification} \label{TblBoundTest1} \\
 \hline
 $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
 \hline
@@ -601,7 +601,7 @@ larger than the corresponding value in \ref{maxVTest}.
 \end{itemize}
 
 \begin{longtable}{c c c c c c c c c c}
-\caption{Initial Flocking Parameters} \label{TblMethodTest1} \\
+\caption{Input of compare-different-timestep} \label{TblMethodTest1} \\
 \hline
 $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
 \hline
