@@ -2,4 +2,4 @@
 
 The folders and files for this folder are as follows:
 
-Describe ...
+VnVPlan.tex - This document outlines the verification and validation plan.

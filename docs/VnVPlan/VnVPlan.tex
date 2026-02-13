@@ -3,6 +3,10 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage{siunitx}
+
 \hypersetup{
     colorlinks,
     citecolor=blue,
@@ -14,6 +18,17 @@
 
 \input{../Comments.text}
 \input{../Common.text}
+
+% Used so that cross-references have a meaningful prefix
+\newcounter{fitnum} %Flocking Input Test Number
+\newcommand{\dthefitnum}{ITF\thefitnum}
+\newcommand{\ftref}[1]{ITF\ref{#1}}
+\newcounter{oitnum} %Obstacles Input Test Number
+\newcommand{\dtheoitnum}{OTF\theoitnum}
+\newcommand{\otref}[1]{OTF\ref{#1}}
+\newcounter{mitnum} %Integration Method Test Number
+\newcommand{\dthemitnum}{MTF\themitnum}
+\newcommand{\mtref}[1]{MTF\ref{#1}}
 
 \begin{document}
 
@@ -30,450 +45,813 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2026/02/13 & 1.0 & Initial VnV plan.\\
 \bottomrule
 \end{tabularx}
 
-~\\
-\wss{The intention of the VnV plan is to increase confidence in the software.
-However, this does not mean listing every verification and validation technique
-that has ever been devised.  The VnV plan should also be a \textbf{feasible}
-plan. Execution of the plan should be possible with the time and team available.
-If the full plan cannot be completed during the time available, it can either be
-modified to ``fake it'', or a better solution is to add a section describing
-what work has been completed and what work is still planned for the future.}
-
-\wss{The VnV plan is typically started after the requirements stage, but before
-the design stage.  This means that the sections related to unit testing cannot
-initially be completed.  The sections will be filled in after the design stage
-is complete.  the final version of the VnV plan should have all sections filled
-in.}
 
 \newpage
 
 \tableofcontents
 
 \listoftables
-\wss{Remove this section if it isn't needed}
-
-\listoffigures
-\wss{Remove this section if it isn't needed}
 
 \newpage
 
 \section{Symbols, Abbreviations, and Acronyms}
+
+For complete symbols used within this software, please refer 
+the \citet{SRS} Section 1.
+
+\subsection{Table of Symbols}
+
+\renewcommand{\arraystretch}{1.2}
+%\noindent \begin{tabularx}{1.0\textwidth}{l l X}
+\noindent \begin{longtable}{l l p{12cm}} \toprule
+\textbf{symbol} & \textbf{unit} & \textbf{description}\\
+\midrule 
+$\mathbf{A}_\mathbf{t}$ & -- & The alignment metric of flocking at time t \\
+$\mathbf{C}_\mathbf{t}$ & \si{\metre} & The flocking cohesion at time t\\
+$k$  & -- & Index of one of the obstacle in the obstacle set \\
+$k_a$  & \si{\kilogram\per\second} & The weighting coefficient of alignment forces \\
+$k_c$  & \si{\kilogram\per\second\squared} & The weighting coefficient of cohesion forces \\
+$k_g$  & \si{\kilogram\per\second\squared} & The weighting coefficient of goal seeking forces \\
+$k_o$  & \si{\kilogram\metre\squared\per\second\squared} & The weighting coefficient of obstacle avoidance forces \\
+$k_s$  & \si{\kilogram\metre\squared\per\second\squared} & The weighting coefficient of separation forces \\
+$N$ & -- & The total number of agent in the flocking model \\
+$\mathbf{M}$ & - & The selected numerical integration method \\
+$\mathbf{p}_{k}$ & \si{\metre} & The position of obstacle \textit{k} \\
+$\mathbf{p}_\mathbf{t}$ & \si{\metre} & The position of flocking center at time t \\
+$\mathbf{r}_{k}$ & \si{\metre} & The radius of obstacle \textit{k} \\
+$\Delta t$ & \si{\second} & The time step used by the numerical integration method \\
+$\mathbf{v}_{i,t}$ & \si{\metre\per\second} & The velocity of agent \textit{i} at time t\\
+$\bar{v}_\mathbf{t}$ & \si{\metre\per\second} & The mean speed of flocking at time t\\
+\bottomrule
+\end{longtable}
+
+\subsection{Abbreviations, and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{l l} 
   \toprule		
   \textbf{symbol} & \textbf{description}\\
   \midrule 
-  T & Test\\
+  R & Requirement \\
+  NFR & Nonfunctional Requirement \\
+  SRS & Software Requirements Specification\\
+  VnV & Verification and Validation \\
+  MG & Module Guide \\
+  MIS & Module Interface Specification \\
+  CI & Continuous integration \\
+  EEuler & Explicit Euler\\
+  RK4 & Runge-Kutta 4\\
+  SIEuler & Semi-Implicit Euler\\
   \bottomrule
 \end{tabular}\\
-
-\wss{symbols, abbreviations, or acronyms --- you can simply reference the SRS
-  \citep{SRS} tables, if appropriate}
-
-\wss{Remove this section if it isn't needed}
 
 \newpage
 
 \pagenumbering{arabic}
 
-This document ... \wss{provide an introductory blurb and roadmap of the
-  Verification and Validation plan}
-
 \section{General Information}
+
+This document provide an introductory blurb and roadmap of the Verification and 
+Validation plan for the project Numerical Integration of Flocking Dynamics over 
+Structured Terrains (\progname{}), with the goal of ensuring that the 
+requirements specified in the SRS are satisfied.
+
+The document includes general information and planning details, specific test 
+cases for both functional and nonfunctional requirements, as well as details of 
+unit testing.
 
 \subsection{Summary}
 
-\wss{Say what software is being tested.  Give its name and a brief overview of
-  its general functions.}
+The software being testing is a program designed to perform group animation 
+simulations. It employs multiple numerical integration methods to simulate the 
+movement of a group of agents navigating toward a target point within an 
+environment containing obstacles. The purpose of the software is to compare the 
+resulting group states and the realism of the generated group animations 
+produced by different numerical integration methods.
 
 \subsection{Objectives}
 
-\wss{State what is intended to be accomplished.  The objective will be around
-  the qualities that are most important for your project.  You might have
-  something like: ``build confidence in the software correctness,''
-  ``demonstrate adequate usability.'' etc.  You won't list all of the qualities,
-  just those that are most important.}
-
-\wss{You should also list the objectives that are out of scope.  You don't have 
-the resources to do everything, so what will you be leaving out.  For instance, 
-if you are not going to verify the quality of usability, state this.  It is also 
-worthwhile to justify why the objectives are left out.}
-
-\wss{The objectives are important because they highlight that you are aware of 
-limitations in your resources for verification and validation.  You can't do everything, 
-so what are you going to prioritize?  As an example, if your system depends on an 
-external library, you can explicitly state that you will assume that external library 
-has already been verified by its implementation team.}
+The most important objective of this document is to build confidence in the 
+correctness of the software \progname{}. This objective is achieved by 
+designing tests corresponding to the functional requirements specified in the 
+SRS. In addition, validation activities are conducted to assess nonfunctional 
+requirements, including usability, maintainability and the realism of the 
+simulation results.
 
 \subsection{Extras}
 
-\wss{Summarize the extras (if any) that were tackled by this project.  Extras
-can include usability testing, code walkthroughs, user documentation, formal
-proof, GenderMag personas, Design Thinking, etc.  Extras should have already
-been approved by the course instructor as included in your problem statement.
-You can use a pull request to update your extras (in TeamComposition.csv or
-Repos.csv) if your plan changes as a result of the VnV planning exercise.}
+The extras of this project include the following documents:
+
+\begin{itemize}
+\item User Manual \\
+The User Manual provides detailed instructions on how to install, configure, 
+and operate the software, which is intended to support users in effectively 
+utilizing the simulation program.
+
+\item Performance Report \\
+The Performance Report presents an evaluation of the computational performance 
+of the software. It includes analysis of execution time, resource usage, 
+and efficiency across different numerical integration methods.
+\end{itemize}
 
 \subsection{Relevant Documentation}
 
-\wss{Reference relevant documentation.  This will definitely include your SRS
-  and your other project documents (design documents, like MG, MIS, etc).  You
-  can include these even before they are written, since by the time the project
-  is done, they will be written.  You can create BibTeX entries for your
-  documents and within those entries include a hyperlink to the documents.}
-
-\citet{SRS}
-
-\wss{Don't just list the other documents.  You should explain why they are relevant and 
-how they relate to your VnV efforts.}
+The related documents include the Problem Statement(\citet{ProblemStatement}), 
+which describes the proposed idea of the project, the Software Requirements 
+Specification (\citet{SRS}), which specifies the software requirements in 
+detail, and \citet{MIS}.
 
 \section{Plan}
 
-\wss{Introduce this section.  You can provide a roadmap of the sections to
-  come.}
+This section presents the test plan for the software. It includes the 
+Verification and Validation team(\ref{vnv_team}), the SRS verification 
+plan(\ref{srs_verif}), the design verification plan(\ref{design_verif}), 
+the implementation verification plann(\ref{vnv_verif}), the automated testing 
+and verification tools(\ref{auto_tool}), and the overall software validation 
+plan(\ref{soft_valid}).
 
-\subsection{Verification and Validation Team}
+\subsection{Verification and Validation Team} \label{vnv_team}
 
-\wss{Your teammates.  Maybe your supervisor.
-  You should do more than list names.  You should say what each person's role is
-  for the project's verification.  A table is a good way to summarize this information.}
+\begin{itemize}
+\item Yibing Mei - Developer \\
+Create and manage all project documents, implement the software, and test with 
+the VnV plan to ensure the quality of the software.
 
-\subsection{SRS Verification}
+\item Dr. Spencer Smith - Supervisor \\
+Review all documents.
 
-\wss{List any approaches you intend to use for SRS verification.  This may
-  include ad hoc feedback from reviewers, like your classmates (like your
-  primary reviewer), or you may plan for something more rigorous/systematic.}
+\item Mohsen Bakhtiari - Domain Expert \\
+Review all documents.
+\end{itemize}
 
-\wss{If you have a supervisor for the project, you shouldn't just say they will
-read over the SRS.  You should explain your structured approach to the review.
-Will you have a meeting?  What will you present?  What questions will you ask?
-Will you give them instructions for a task-based inspection?  Will you use your
-issue tracker?}
+\subsection{SRS Verification} \label{srs_verif}
 
-\wss{Maybe create an SRS checklist?}
+The SRS Verification is done through a structured review process. First, 
+Supervisor(Dr. Spencer Smith) and Domain Expert(Mohsen Bakhtiari) will review 
+using the \citet{SRSChecklist}, which is designed by Dr. Spencer Smith. Feedback 
+should be create as GitHub issues. The developer(Yibing Mei) is responsible to 
+address issues to ensure the quality of SRS document.
 
-\subsection{Design Verification}
+\subsection{Design Verification} \label{design_verif}
 
-\wss{Plans for design verification}
+The design will be verified by Supervisor(Dr. Spencer Smith) and Domain 
+Expert(Mohsen Bakhtiari). Feedback will be provided through the creation of 
+issues on GitHub. The developer(Yibing Mei) will review, address, and resolve 
+these issues.
 
-\wss{The review will include reviews by your classmates}
+\subsection{Verification and Validation Plan Verification} \label{vnv_verif}
 
-\wss{Create a checklists?}
-
-\subsection{Verification and Validation Plan Verification}
-
-\wss{The verification and validation plan is an artifact that should also be
-verified.  Techniques for this include review and mutation testing.}
-
-\wss{The review will include reviews by your classmates}
-
-\wss{Create a checklists?}
+The VnV plan will be reviewed by Supervisor(Dr. Spencer Smith) and Domain 
+Expert(Mohsen Bakhtiari) following the \citet{VnVChecklist}. Feedback will be 
+communicated through the creation of GitHub issues. The developer(Yibing Mei) 
+will address the reported issues and update the document accordingly.
 
 \subsection{Implementation Verification}
 
-\wss{You should at least point to the tests listed in this document and the unit
-  testing plan.}
+Implementation verification will be achieved through the execution of the 
+test cases specified in Section~\ref{sec_systest}. Detailed descriptions of 
+the unit testing approach are provided in Section~\ref{sec_unittest}. 
+Furthermore, the final class presentation will be used as a code walkthrough.
 
-\wss{In this section you would also give any details of any plans for static
-  verification of the implementation.  Potential techniques include code
-  walkthroughs, code inspection, static analyzers, etc.}
+\subsection{Automated Testing and Verification Tools} \label{auto_tool}
 
-\wss{The final class presentation in CAS 741 could be used as a code
-walkthrough.  There is also a possibility of using the final presentation (in
-CAS741) for a partial usability survey.}
+This project is planned to be developed in Unity using C#, and some of Unity's 
+built-in tools and package will be used for automated testing.
 
-\subsection{Automated Testing and Verification Tools}
+\begin{itemize}
+\item Linters: Roslyn Analyzers.
 
-\wss{What tools are you using for automated testing.  Likely a unit testing
-  framework and maybe a profiling tool, like ValGrind.  Other possible tools
-  include a static analyzer, make, continuous integration tools, test coverage
-  tools, etc.  Explain your plans for summarizing code coverage metrics.
-  Linters are another important class of tools.  For the programming language
-  you select, you should look at the available linters.  There may also be tools
-  that verify that coding standards have been respected, like flake9 for
-  Python.}
+\item System and Unit Tests: Unity Test Framework.
 
-\wss{If you have already done this in the development plan, you can point to
-that document.}
+\item ode Coverage: Unity Code Coverage Package.
 
-\wss{The details of this section will likely evolve as you get closer to the
-  implementation.}
+\item Continuous Integration(CI): GitHub Actions to run automated tests upon 
+pull request to main branch.
+\end{itemize}
 
-\subsection{Software Validation}
+\subsection{Software Validation} \label{soft_valid}
 
-\wss{If there is any external data that can be used for validation, you should
-  point to it here.  If there are no plans for validation, you should state that
-  here.}
+Software validation is beyond the scope of this project.
 
-\wss{You might want to use review sessions with the stakeholder to check that
-the requirements document captures the right requirements.  Maybe task based
-inspection?}
+The foundation of the project is primarily theoretical, and the outputs are 
+intended to illustrate general trends rather than produce meaningful numerical 
+results. Consequently, even if external data were available, direct comparison 
+for validation purposes would not be appropriate.
 
-\wss{For those capstone teams with an external supervisor, the Rev 0 demo should 
-be used as an opportunity to validate the requirements.  You should plan on 
-demonstrating your project to your supervisor shortly after the scheduled Rev 0 demo.  
-The feedback from your supervisor will be very useful for improving your project.}
+The validation process would require evaluation by domain experts to confirm 
+the correctness of models and equations, and ensure that the theoretical 
+formulations have been implemented accurately. This level of assessment is 
+outside the responsibility and scope of the current project.
 
-\wss{For teams without an external supervisor, user testing can serve the same purpose 
-as a Rev 0 demo for the supervisor.}
+\section{System Tests} \label{sec_systest}
 
-\wss{This section might reference back to the SRS verification section.}
+This section presents the detailed test cases for both the functional 
+requirements(\ref{test_func}) and the nonfunctional requirements(\ref{test_nonfunc}).
 
-\section{System Tests}
+\subsection{Tests for Functional Requirements} \label{test_func}
 
-\wss{There should be text between all headings, even if it is just a roadmap of
-the contents of the subsections.}
+These test cases are designed to verify the functional requirements specified 
+in the \citet{SRS}(Section 5.1). The traceability between the requirements and 
+the corresponding test cases is illustrated in Table~\ref{tblTrace}.
 
-\subsection{Tests for Functional Requirements}
+\subsubsection{Input Test} \label{inputTest}
 
-\wss{Subsets of the tests may be in related, so this section is divided into
-  different areas.  If there are no identifiable subsets for the tests, this
-  level of document structure can be removed.}
+This section covers the test cases for R1 and R2 specified in the \citet{SRS}, 
+including verification of input validity and confirmation that appropriate 
+error messages are returned when inputs are invalid. Due to the large number 
+of input parameters, they are organized into three groups based on the aspects 
+of the system behavior they control.
 
-\wss{Include a blurb here to explain why the subsections below
-  cover the requirements.  References to the SRS would be good here.}
-
-\subsubsection{Area of Testing1}
-
-\wss{It would be nice to have a blurb here to explain why the subsections below
-  cover the requirements.  References to the SRS would be good here.  If a section
-  covers tests for input constraints, you should reference the data constraints
-  table in the SRS.}
+In general, invalid inputs are unlikely due to the presence of a graphical 
+input interface. However, input validation must still be performed at the 
+backend to ensure robustness and correctness.
 		
-\paragraph{Title for Test}
+\paragraph{Input Tests for Flocking Parameters}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{test-input-Flocking\\}
 
-Control: Manual versus Automatic
+Control: Automatic
 					
-Initial State: 
+Initial State: The numerical integration method is SIEuler, with no obstacles 
+present.
 					
-Input: 
+Input: The Input column in Table~\ref{TblITFlocking}
 					
-Output: \wss{The expected result for the given inputs.  Output is not how you
-are going to return the results of the test.  The output is the expected
-result.}
+Output: The Output column in Table~\ref{TblITFlocking}
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+Test Case Derivation: The constraints on the flocking parameters ensure that 
+the flocking behavior can remain in a fundamentally stable state. The software 
+will return an error message for any invalid inputs or pass valid inputs on to 
+the next step.
 					
-How test will be performed: 
-					
-\item{test-id2\\}
+How test will be performed: The developer will create the test cases and run 
+them automatically using the Unity Test Framework.
+\end{enumerate}
 
-Control: Manual versus Automatic
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
+\begin{longtable}{c|c c c c c c c|c c}
+\caption{Input and Output - Flocking} \label{TblITFlocking} \\
+\hline
+\multicolumn{1}{c|}{Index} & \multicolumn{7}{c|}{Input} & \multicolumn{2}{c}{Output} \\
+\hline
+& $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & Valid? & Error Message \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & Y & No error message. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & -10 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & N & $N$ must be in [1, 5000]. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & -0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & N & ${\Delta t}$ must be in [0.005, 0.1]. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 3.5 & 0.5 & 0.5 & 0.5 & 0.5 & N & $k_a$ must be in [0, 2.0]. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 0.5 & 3.5 & 0.5 & 0.5 & 0.5 & N & $k_c$ must be in [0, 2.0]. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 0.5 & 0.5 & 3.5 & 0.5 & 0.5 & N & $k_s$ must be in [0, 2.0]. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 0.5 & 0.5 & 0.5 & 3.5 & 0.5 & N & $k_o$ must be in [0, 2.0]. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 3.5 & N & $k_g$ must be in [0, 2.0]. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum &   & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & N & Data missing for $N$. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 &   & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & N & Data missing for ${\Delta t}$. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 &   & 0.5 & 0.5 & 0.5 & 0.5 & N & Data missing for $k_a$. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 0.5 &   & 0.5 & 0.5 & 0.5 & N & Data missing for $k_c$. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 0.5 & 0.5 &   & 0.5 & 0.5 & N & Data missing for $k_s$. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 0.5 & 0.5 & 0.5 &   & 0.5 & N & Data missing for $k_o$. \\
+\hline
+ITF\refstepcounter{fitnum}\thefitnum & 100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 &   & N & Data missing for $k_g$. \\
+\hline
+\end{longtable}
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+\paragraph{Input Tests for Obstacle Parameters}
 
-How test will be performed: 
+\begin{enumerate}
+\item{test-input-obstacle\\}
+
+Control: Automatic
+					
+Initial State: The numerical integration method is SIEuler, and the flocking 
+parameters is in Table~\ref{TblFlockParameters}.
+					
+Input: The Input column in Table~\ref{TblITObstacles}
+					
+Output: The Output column in Table~\ref{TblITObstacles}
+
+Test Case Derivation: The constraints on the obstacle parameters ensure that 
+the obstacles are meaningful and may influence the flocking behavior. Obstacles 
+are optional; however, if present, each obstacle $k$ must have both $\mathbf{p}_k$ 
+and $\mathbf{r}_k$ defined.
+					
+How test will be performed: The developer will create the test cases and run 
+them automatically using the Unity Test Framework.
 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
+\begin{longtable}{c c c c c c c}
+\caption{Initial Flocking Parameters} \label{TblFlockParameters} \\
+\hline
+$N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ \\
+\hline
+100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 \\
+\hline
+\end{longtable}
 
-...
+\begin{longtable}{c|c c|c c}
+\caption{Input and Output - Obstacles} \label{TblITObstacles} \\
+\hline
+\multicolumn{1}{c|}{Index} & \multicolumn{2}{c|}{Input} & \multicolumn{2}{c}{Output} \\
+\hline
+& $\mathbf{p}_k\text{(m,m)}$ & $\mathbf{r}_k\text{(m)}$ & Valid? & Error Message \\
+\hline
+OTF\refstepcounter{oitnum}\theoitnum & (100,100) & 50 & Y & No error message.\\
+\hline
+OTF\refstepcounter{oitnum}\theoitnum & - & - & Y & No error message.\\
+\hline
+OTF\refstepcounter{oitnum}\theoitnum & (-900,100) & 50 & N & For $\mathbf{p}_k\text{(x,y)}$, x and y must be in [-500,1000].\\
+\hline
+OTF\refstepcounter{oitnum}\theoitnum & (100,100) & -50 & N & $\mathbf{r}_k$ must be in [1, 500].\\
+\hline
+OTF\refstepcounter{oitnum}\theoitnum & - & 50 & N & Data missing for $\mathbf{p}_k$.\\
+\hline
+\end{longtable}
 
-\subsection{Tests for Nonfunctional Requirements}
-
-\wss{The nonfunctional requirements for accuracy will likely just reference the
-  appropriate functional tests from above.  The test cases should mention
-  reporting the relative error for these tests.  Not all projects will
-  necessarily have nonfunctional requirements related to accuracy.}
-
-\wss{For some nonfunctional tests, you won't be setting a target threshold for
-passing the test, but rather describing the experiment you will do to measure
-the quality for different inputs.  For instance, you could measure speed versus
-the problem size.  The output of the test isn't pass/fail, but rather a summary
-table or graph.}
-
-\wss{Tests related to usability could include conducting a usability test and
-  survey.  The survey will be in the Appendix.}
-
-\wss{Static tests, review, inspections, and walkthroughs, will not follow the
-format for the tests given below.}
-
-\wss{If you introduce static tests in your plan, you need to provide details.
-How will they be done?  In cases like code (or document) walkthroughs, who will
-be involved? Be specific.}
-
-\subsubsection{Area of Testing1}
-		
-\paragraph{Title for Test}
+\paragraph{Input Tests for Integration Methods}
 
 \begin{enumerate}
+\item{test-input-method\\}
 
-\item{test-id1\\}
+Control: Automatic
+					
+Initial State: There is no obstacle, and the flocking parameters is in 
+Table~\ref{TblFlockParameters}.
+					
+Input: The Input column in Table~\ref{TblITMethods}
+					
+Output: The Output column in Table~\ref{TblITMethods}
 
-Type: Functional, Dynamic, Manual, Static etc.
+Test Case Derivation: The software currently supports only the Explicit 
+Euler(EEuler), Runge-Kutta 4(RK4), and Semi-Implicit Euler(SIEuler) methods.
 					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
+How test will be performed: The developer will create the test cases and run 
+them automatically using the Unity Test Framework.
 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
+\begin{longtable}{c|c|c c}
+\caption{Input and Output - Methods} \label{TblITMethods} \\
+\hline
+\multicolumn{1}{c|}{Index} & \multicolumn{1}{c|}{Input} & \multicolumn{2}{c}{Output} \\
+\hline
+& $\mathbf{M}$ & Valid? & Error Message \\
+\hline
+OTF\refstepcounter{mitnum}\themitnum & EEuler & Y & No error message.\\
+\hline
+OTF\refstepcounter{mitnum}\themitnum & Euler & N & $\mathbf{M}$ must be in \{EEuler, RK4, SIEuler\}.\\
+\hline
+OTF\refstepcounter{mitnum}\themitnum & - & N & Data missing for$\mathbf{M}$.\\
+\hline
+\end{longtable}
 
-...
+\subsubsection{Test of Motion Logic} \label{motionTest}
 
-\subsection{Traceability Between Test Cases and Requirements}
+This section covers R4, R5 and R6 from the \citet{SRS}. Due to the lack of 
+directly comparable datasets for the software outputs, the accuracy of the 
+models executed by the software will be primarily ensured through static code 
+analysis and unit tests. In this context, the functional test cases for 
+flocking dynamics focus on verifying the overall trends and expected behaviors 
+of the agents rather than exact numerical values.
 
-\wss{Provide a table that shows which test cases are supporting which
-  requirements.}
+\paragraph{Input Tests for Integration Methods}
 
-\section{Unit Test Description}
+\begin{enumerate}
+\item{two-agent-symmetric-motion\\} \label{symmetricTest}
 
-\wss{This section should not be filled in until after the MIS (detailed design
-  document) has been completed.}
+Control: Automatic and Manual
+					
+Initial State: There are only two agents, with initial positions at (0.5, 1) 
+and (1, 0.5), respectively.
+					
+Input: The Input column in Table~\ref{TblMotionTest1}
+					
+Output: Animation, the flocking center $\mathbf{p}_t$ , the flock 
+cohesion $\mathbf{C}_\mathbf{t}$.
 
-\wss{Reference your MIS (detailed design document) and explain your overall
-philosophy for test case selection.}  
+Test Case Derivation: For flocking with only two agents, according to DD4, 
+DD5, DD6, DD7, and DD8 in the \citet{SRS}, when their initial positions, 
+obstacles, and the goal point are all symmetric with respect to the line $y=x$, 
+the forces they experience at the initial step are also symmetric about 
+$y=x$. Consequently, this symmetry is preserved at every subsequent time step. 
+For these two agents, a flocking center, in other words, the midpoint between 
+them, necessarily located at on the symmetry axis.
 
-\wss{To save space and time, it may be an option to provide less detail in this section.  
-For the unit tests you can potentially layout your testing strategy here.  That is, you 
-can explain how tests will be selected for each module.  For instance, your test building 
-approach could be test cases for each access program, including one test for normal behaviour 
-and as many tests as needed for edge cases.  Rather than create the details of the input 
-and output here, you could point to the unit testing code.  For this to work, you code 
-needs to be well-documented, with meaningful names for all of the tests.}
+How test will be performed: 
+\begin{itemize}
+\item For  $\mathbf{p}_t(x,y)$, $|x-y|=0$.
+\item In the animation, it can be clearly observed that the two agents move 
+symmetrically with respect to the line $y=x$.
+\end{itemize}
+In the actual implementation, minor deviations may occur due to floating-point 
+arithmetic. Since this is a continuous animation, the state of an agent at 
+any given moment affects its subsequent states, so the longer the simulation 
+runs, the larger the deviation may become.
 
-\subsection{Unit Testing Scope}
+\begin{longtable}{c c c c c c c c c c}
+\caption{Initial Flocking Parameters} \label{TblMotionTest1} \\
+\hline
+$N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
+\hline
+2 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & SIEuler \\
+\hline
+\end{longtable}
 
-\wss{What modules are outside of the scope.  If there are modules that are
-  developed by someone else, then you would say here if you aren't planning on
-  verifying them.  There may also be modules that are part of your software, but
-  have a lower priority for verification than others.  If this is the case,
-  explain your rationale for the ranking of module importance.}
+\item{single-weight-zero\\} \label{zeroWeightTest}
 
-\subsection{Tests for Functional Requirements}
+Control: Automatic and Manual
+					
+Initial State: There are only two agents, with initial positions at (0.5, 1) 
+and (1, 0.5), respectively.
+					
+Input: The Input column in Table~\ref{TblMotionTest2}
+					
+Output: Animation, the flocking center $\mathbf{p}_t$ , the flock 
+cohesion $\mathbf{C}_\mathbf{t}$.
 
-\wss{Most of the verification will be through automated unit testing.  If
-  appropriate specific modules can be verified by a non-testing based
-  technique.  That can also be documented in this section.}
+Test Case Derivation: Similar to \ref{symmetricTest}, this test also ensures 
+that the two agents remain symmetric with respect to the line $y=x$ at all 
+times. However, due to the absence of the separation force within the 
+flocking model, even if the agents start very close to each other, they lack 
+the repulsive force between them. As a result, the flocking cohesion in this 
+test is expected to be smaller than in \ref{symmetricTest}.
 
-\subsubsection{Module 1}
+How test will be performed: 
+\begin{itemize}
+\item For the majority of the simulation time, the $\mathbf{C}_\mathbf{t}$ 
+value in this test is expected to be smaller than that of \ref{symmetricTest}.
+\item The flocking center is required to lie on the line $y=x$.
+\item In the animation, it can be clearly observed that the two agents move 
+symmetrically with respect to the line $y=x$. And compared to \ref{symmetricTest}, 
+the two agents are positioned closer to each other.
+\end{itemize}
+Similar to \ref{symmetricTest}, this test may also exhibit deviations due to 
+floating-point computations.
 
-\wss{Include a blurb here to explain why the subsections below cover the module.
-  References to the MIS would be good.  You will want tests from a black box
-  perspective and from a white box perspective.  Explain to the reader how the
-  tests were selected.}
+\begin{longtable}{c c c c c c c c c c}
+\caption{Initial Flocking Parameters} \label{TblMotionTest2} \\
+\hline
+$N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
+\hline
+2 & 0.01 & 0.5 & 0.5 & 0 & 0.5 & 0.5 & (200,200) & 50 & SIEuler \\
+\hline
+\end{longtable}
+
+\end{enumerate}
+
+\subsubsection{Boundary Testing of Variables} \label{boundaryTest}
+
+This section covers R5 and R7 from the \citet{SRS}. Since the boundaries 
+can be computed and compared, this section focuses on numerical values 
+rather than overall trends.
+
+\paragraph{Boundary Testing of Velocity}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{maximum-velocity-verification\\} \label{maxVTest}
 
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
+Control: Automatic
 					
-Initial State: 
+Initial State: None.
 					
-Input: 
+Input: The Input column in Table~\ref{TblBoundTest1}
 					
-Output: \wss{The expected result for the given inputs}
+Output: Agent speed $\mathbf{v}_{i,t}$, line chart of mean 
+speed $\bar{v}_\mathbf{t}$, alignment metric $\mathbf{A}_\mathbf{t}$, flock 
+cohesion $\mathbf{C}_\mathbf{t}$.
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
-
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+Test Case Derivation: To prevent the flocking behavior from diverging, a 
+maximum velocity constraint must be enforced for each agent.
 
 How test will be performed: 
+\begin{itemize}
+\item $|\mathbf{v}_{i,t}| < \mathbf{v}_{max}$
+\end{itemize}
+$\mathbf{v}_{max}$ is a boundary introduced to maintain the stability of the 
+flocking behavior. Its exact value has not yet been determined; it may later 
+be computed based on the dynamical model in \citet{OlfatiFlocking2006}, or 
+set as a fixed value as done in \citet{AndrewFlocking2011}.
 
-\item{...\\}
+\begin{longtable}{c c c c c c c c c c}
+\caption{Initial Flocking Parameters} \label{TblBoundTest1} \\
+\hline
+$N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
+\hline
+100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & EEuler \\
+100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & RK4 \\
+100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & SIEuler \\
+\hline
+\end{longtable}
+\end{enumerate}
+
+\subsubsection{Testing of Integration Methods} \label{methodTest}
+
+This section covers R3, R5 and R7 from the \citet{SRS}. It focuses on 
+verifying the overall trends presented in the line charts.
+
+\paragraph{Integration Method Verification}
+
+\begin{enumerate}
+
+\item{compare-different-timestep\\} \label{timestepVTest}
+
+Control: Automatic
+					
+Initial State: None.
+					
+Input: The Input column in Table~\ref{TblMethodTest1}
+					
+Output: Line chart of mean speed $\bar{v}_\mathbf{t}$, alignment 
+metric $\mathbf{A}_\mathbf{t}$, flock cohesion $\mathbf{C}_\mathbf{t}$.
+
+Test Case Derivation: Since numerical integration methods discretize 
+continuous dynamics for computation, theoretically, the smaller the time step, 
+the smaller the differences among the results produced by different numerical 
+integration methods.
+
+How test will be performed: 
+\begin{itemize}
+\item Throughout the entire simulation, the average difference 
+in $\bar{v}_\mathbf{t}$ among the different numerical integration methods is 
+larger than the corresponding value in \ref{maxVTest}.
+\item Throughout the entire simulation, the average difference 
+in $\mathbf{A}_\mathbf{t}$ among the different numerical integration methods is 
+larger than the corresponding value in \ref{maxVTest}.
+\item Throughout the entire simulation, the average difference 
+in $\mathbf{C}_\mathbf{t}$ among the different numerical integration methods is 
+larger than the corresponding value in \ref{maxVTest}.
+\end{itemize}
+
+\begin{longtable}{c c c c c c c c c c}
+\caption{Initial Flocking Parameters} \label{TblMethodTest1} \\
+\hline
+$N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
+\hline
+100 & 0.1 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & EEuler \\
+100 & 0.1 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & RK4 \\
+100 & 0.1 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & SIEuler \\
+\hline
+\end{longtable}
+\end{enumerate}
+
+\subsection{Tests for Nonfunctional Requirements} \label{test_nonfunc}
+
+The nonfunctional requirements can be found in Section 5.2 of the \citet{SRS}. 
+All four nonfunctional requirements will be addressed in the following sections.
+
+\subsubsection{Correctness} \label{realismTest}
+
+The correctness of the software implementation can be verified through the 
+functional test cases in \ref{test_func} and the unit tests. Requirements 
+related to realism will be validated using \ref{realismTestCase} described 
+below.
+		
+\paragraph{Realism Test} \label{realismTestCase}
+
+\begin{enumerate}
+
+\item{test-realism\\}
+
+Type: Manual with potential users.
+					
+Initial State: The software is set up and ready for testing, and a set of 
+relatively appropriate input parameters has already been identified.
+					
+Input/Condition: None.
+					
+Output/Result: Survey about the user experience with software.
+					
+How test will be performed: After using the software, users will be asked to 
+complete a survey(~\ref{realismSurvey}) based on their experience to 
+evaluate the realism of the simulated flocking animation.
+
+\end{enumerate}
+
+\subsubsection{Verifiability} \label{verifyTest}
+
+The verifiability requirement is satisfied by demonstrating that all SRS 
+requirements are linked to specific test cases in the traceability matrix, 
+ensuring full coverage of the verification and validation activities. The 
+specific traceability mappings can be found in Section~\ref{secTrace}.
+
+\subsubsection{Usability} \label{usabilityTest}
+
+Usability focuses on whether the graphical user interface of the software is 
+clear, and easy to use. So this aspect will be evaluated based on user feedback.
+		
+\paragraph{Usability Test}
+
+\begin{enumerate}
+
+\item{test-usability\\}
+
+Type: Manual with potential users.
+					
+Initial State: The software is set up and ready for testing.
+					
+Input/Condition: None.
+					
+Output/Result: Survey about the user experience with software.
+					
+How test will be performed: After using the software, users will be asked to 
+complete a survey(~\ref{usablitySurvey}) based on their experience to 
+evaluate the usability of the software.
+
+\end{enumerate}
+
+\subsubsection{Maintainability} \label{maintainTest}
+
+The correctness of the software implementation can be verified through the 
+functional test cases in \ref{test_func} and the unit tests. Requirements 
+related to realism will be validated using \ref{realismTestCase} described 
+below.
+		
+\paragraph{Maintainability Test}
+
+\begin{enumerate}
+
+\item{test-maintainability\\}
+
+Type: Manual.
+					
+Initial State: The software has completed the implementation of its core 
+functionalities, and the total development time has been recorded as 
+$\mathbf{T}_{dev}$.
+					
+Input/Condition: Adding support for a new feature, such as supporting a new 
+numerical integration method, Runge-Kutta 3.
+					
+Output/Result: Implementing the corresponding feature and record the time 
+required as$\mathbf{T}_{add}$.
+					
+How test will be performed: Compare the original development time 
+$\mathbf{T}_{dev}$ with the time required to implement the new feature 
+$\mathbf{T}_{add}$ to verify whether it satisfies the requirement of NFR4.
+
+\end{enumerate}
+
+\subsection{Traceability Between Test Cases and Requirements} \label{secTrace}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+	& R1 & R2 & R3 & R4 & R5 & R6 & R7 & NFR1 & NFR2 & NFR3 & NFR4 \\
+\hline
+\ref{inputTest}                &X&X& & & & & & & & & \\ \hline
+\ref{motionTest}               & & & &X&X&X& &X& & & \\ \hline
+\ref{boundaryTest}             & & & & &X& &X&X& & & \\ \hline
+\ref{methodTest}               & & &X& &X& &X& & & & \\ \hline
+\ref{realismTest}              & & & & & & & &X& & & \\ \hline
+\ref{verifyTest}               & & & & & & & & &X& & \\ \hline
+\ref{usabilityTest}            & & & & & & & & & &X& \\ \hline
+\ref{maintainTest}             & & & & & & & & & & &X\\ \hline
+\end{tabular}
+\caption{Traceability Between Test Cases And Requirements} \label{tblTrace}
+\end{table}
+
+\section{Unit Test Description} \label{sec_unittest}
+
+This section should not be filled in until after the MIS (detailed design
+document) has been completed.
+
+% \wss{Reference your MIS (detailed design document) and explain your overall
+% philosophy for test case selection.}  
+
+% \wss{To save space and time, it may be an option to provide less detail in this section.  
+% For the unit tests you can potentially layout your testing strategy here.  That is, you 
+% can explain how tests will be selected for each module.  For instance, your test building 
+% approach could be test cases for each access program, including one test for normal behaviour 
+% and as many tests as needed for edge cases.  Rather than create the details of the input 
+% and output here, you could point to the unit testing code.  For this to work, you code 
+% needs to be well-documented, with meaningful names for all of the tests.}
+
+% \subsection{Unit Testing Scope}
+
+% \wss{What modules are outside of the scope.  If there are modules that are
+%   developed by someone else, then you would say here if you aren't planning on
+%   verifying them.  There may also be modules that are part of your software, but
+%   have a lower priority for verification than others.  If this is the case,
+%   explain your rationale for the ranking of module importance.}
+
+% \subsection{Tests for Functional Requirements}
+
+% \wss{Most of the verification will be through automated unit testing.  If
+%   appropriate specific modules can be verified by a non-testing based
+%   technique.  That can also be documented in this section.}
+
+% \subsubsection{Module 1}
+
+% \wss{Include a blurb here to explain why the subsections below cover the module.
+%   References to the MIS would be good.  You will want tests from a black box
+%   perspective and from a white box perspective.  Explain to the reader how the
+%   tests were selected.}
+
+% \begin{enumerate}
+
+% \item{test-id1\\}
+
+% Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%   be automatic}
+					
+% Initial State: 
+					
+% Input: 
+					
+% Output: \wss{The expected result for the given inputs}
+
+% Test Case Derivation: \wss{Justify the expected value given in the Output field}
+
+% How test will be performed: 
+					
+% \item{test-id2\\}
+
+% Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%   be automatic}
+					
+% Initial State: 
+					
+% Input: 
+					
+% Output: \wss{The expected result for the given inputs}
+
+% Test Case Derivation: \wss{Justify the expected value given in the Output field}
+
+% How test will be performed: 
+
+% \item{...\\}
     
-\end{enumerate}
+% \end{enumerate}
 
-\subsubsection{Module 2}
+% \subsubsection{Module 2}
 
-...
+% ...
 
-\subsection{Tests for Nonfunctional Requirements}
+% \subsection{Tests for Nonfunctional Requirements}
 
-\wss{If there is a module that needs to be independently assessed for
-  performance, those test cases can go here.  In some projects, planning for
-  nonfunctional tests of units will not be that relevant.}
+% \wss{If there is a module that needs to be independently assessed for
+%   performance, those test cases can go here.  In some projects, planning for
+%   nonfunctional tests of units will not be that relevant.}
 
-\wss{These tests may involve collecting performance data from previously
-  mentioned functional tests.}
+% \wss{These tests may involve collecting performance data from previously
+%   mentioned functional tests.}
 
-\subsubsection{Module ?}
+% \subsubsection{Module ?}
 		
-\begin{enumerate}
+% \begin{enumerate}
 
-\item{test-id1\\}
+% \item{test-id1\\}
 
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
+% Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%   be automatic}
 					
-Initial State: 
+% Initial State: 
 					
-Input/Condition: 
+% Input/Condition: 
 					
-Output/Result: 
+% Output/Result: 
 					
-How test will be performed: 
+% How test will be performed: 
 					
-\item{test-id2\\}
+% \item{test-id2\\}
 
-Type: Functional, Dynamic, Manual, Static etc.
+% Type: Functional, Dynamic, Manual, Static etc.
 					
-Initial State: 
+% Initial State: 
 					
-Input: 
+% Input: 
 					
-Output: 
+% Output: 
 					
-How test will be performed: 
+% How test will be performed: 
 
-\end{enumerate}
+% \end{enumerate}
 
-\subsubsection{Module ?}
+% \subsubsection{Module ?}
 
-...
+% ...
 
-\subsection{Traceability Between Test Cases and Modules}
+% \subsection{Traceability Between Test Cases and Modules}
 
-\wss{Provide evidence that all modules have been considered.}
+% \wss{Provide evidence that all modules have been considered.}
 				
 \bibliographystyle{plainnat}
 
@@ -485,38 +863,58 @@ How test will be performed:
 
 This is where you can place additional information.
 
-\subsection{Symbolic Parameters}
+% \subsection{Symbolic Parameters}
 
-The definition of the test cases will call for SYMBOLIC\_CONSTANTS.
-Their values are defined in this section for easy maintenance.
+% The definition of the test cases will call for SYMBOLIC\_CONSTANTS.
+% Their values are defined in this section for easy maintenance.
 
-\subsection{Usability Survey Questions?}
-
-\wss{This is a section that would be appropriate for some projects.}
-
-\newpage{}
-\section*{Appendix --- Reflection}
-
-\wss{This section is not required for CAS 741}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Lifelong Learning.
-
-\input{../Reflection.text}
+\subsection{Simulation Realism Survey Questions} \label{realismSurvey}
 
 \begin{enumerate}
-  \item What went well while writing this deliverable? 
-  \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
-  \item What knowledge and skills will the team collectively need to acquire to
-  successfully complete the verification and validation of your project?
-  Examples of possible knowledge and skills include dynamic testing knowledge,
-  static testing knowledge, specific tool usage, Valgrind etc.  You should look to
-  identify at least one item for each team member.
-  \item For each of the knowledge areas and skills identified in the previous
-  question, what are at least two approaches to acquiring the knowledge or
-  mastering the skill?  Of the identified approaches, which will each team
-  member pursue, and why did they make this choice?
+\item From one to five and five being the most satisfied, how realistic do you 
+find the final animation?
+\item Based on your experience, please rank the realism of the animations 
+generated by the different parameter sets.
 \end{enumerate}
+
+\subsection{Usability Survey Questions} \label{usablitySurvey}
+
+\begin{enumerate}
+\item From one to five and five being the most satisfied, how would you rate 
+your overall experience of this software?
+\item From one to five and five being the most satisfied, how clear and easy 
+to understand do you find the variable input UI?
+\item From one to five and five being the most satisfied, how would you rate 
+the speed and responsiveness of this software?
+\item From one to five and five being the most satisfied, how clear and easy 
+to understand do you find the output line charts?
+\item Do you think the software includes all the features you want? If not, 
+please specify which features are missing.
+\end{enumerate}
+
+% \newpage{}
+% \section*{Appendix --- Reflection}
+
+% \wss{This section is not required for CAS 741}
+
+% The information in this section will be used to evaluate the team members on the
+% graduate attribute of Lifelong Learning.
+
+% \input{../Reflection.text}
+
+% \begin{enumerate}
+%   \item What went well while writing this deliverable? 
+%   \item What pain points did you experience during this deliverable, and how
+%     did you resolve them?
+%   \item What knowledge and skills will the team collectively need to acquire to
+%   successfully complete the verification and validation of your project?
+%   Examples of possible knowledge and skills include dynamic testing knowledge,
+%   static testing knowledge, specific tool usage, Valgrind etc.  You should look to
+%   identify at least one item for each team member.
+%   \item For each of the knowledge areas and skills identified in the previous
+%   question, what are at least two approaches to acquiring the knowledge or
+%   mastering the skill?  Of the identified approaches, which will each team
+%   member pursue, and why did they make this choice?
+% \end{enumerate}
 
 \end{document}
