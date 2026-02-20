@@ -513,7 +513,7 @@ on.
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
-RefName & TM\refstepcounter{theorynum}\thedefnum \label{NewtonSecLaw}:NewtonSecLaw\\
+RefName & TM\refstepcounter{theorynum}\thetheorynum \label{NewtonSecLaw}:NewtonSecLaw\\
 \hline
 Label & Newton's second law of motion \\
 \hline
@@ -542,7 +542,7 @@ Ref.\ By & \iref{TimeStepAcc}\\
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
-RefName & TM\refstepcounter{theorynum}\thedefnum \label{ConTimeDy}:ConTimeDy\\
+RefName & TM\refstepcounter{theorynum}\thetheorynum \label{ConTimeDy}:ConTimeDy\\
 \hline
 Label & Continuous-time agent dynamics \\
 \hline
@@ -1088,6 +1088,7 @@ $f(\mathbf{p}_i, \mathbf{v}_i) =\begin{bmatrix}\mathbf{v}_i \\\mathbf{a}_i\end{b
 & $\mathbf{k}_3 = f(\mathbf{p}_{i,t} + \frac{\Delta t}{2}\mathbf{k}_2, \mathbf{v}_{i,t} + \frac{\Delta t}{2}\mathbf{k}_2)$, \\
 & $\mathbf{k}_4 = f(\mathbf{p}_{i,t} + \Delta t \mathbf{k}_3, \mathbf{v}_{i,t} + \Delta t \mathbf{k}_3)$, \\
 & $\mathbf{p}_{i,t+\Delta t} = \mathbf{p}_{i,t} + \frac{\Delta t}{6}(\mathbf{k}_1 + 2\mathbf{k}_2 + 2\mathbf{k}_3 + \mathbf{k}_4)$. \\
+& $\mathbf{v}_{i,t+\Delta t} = \mathbf{v}_{i,t} + \frac{\Delta t}{6}(\mathbf{k}_1 + 2\mathbf{k}_2 + 2\mathbf{k}_3 + \mathbf{k}_4)$. \\
 \hline
 Description & 
 The continuous-time system is approximated using an input time step $\Delta t$. \\
