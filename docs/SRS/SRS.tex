@@ -287,12 +287,15 @@ verification and validation plan.
 
 The scope of the requirements includes the simulation and visualization of 
 flocking dynamics in a two-dimensional environment using multiple numerical 
-integration methods.
+integration methods. 
 
 The scope of the system is limited to deterministic simulations, and does not 
 include stochastic influences such as random forces or external noise. And the 
 system does not provide boundary collision handling or response mechanisms, nor 
-does it support real-time control of agents.
+does it support real-time control of agents. Addi, due to the adoption of a 
+two-dimensional environment model, the concept of structured terrains is 
+restricted to static obstacles only, excluding more complex terrain properties 
+such as height variations, gradients, or dynamic surfaces.
 
 \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
 
@@ -386,6 +389,8 @@ easier to correctly understand the requirements:
 motion rules.
 \item Numerical Integration Method: A method used to compute agents' positions 
 and velocities over discrete time steps.
+\item Structured Terrain: In this project, structured terrain refers to a 2D 
+environment containing static obstacles that influence agent movement.
 
 \end{itemize}
 
