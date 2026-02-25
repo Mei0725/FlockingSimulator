@@ -151,6 +151,7 @@ of Flocking Dynamics over Structured Terrains}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
 2026/02/03 & 1.0 & Initialization of the SRS Document\\
+2026/02/24 & 1.1 & Modified based on the reviewer's feedback\\
 \bottomrule
 \end{tabularx}
 
@@ -193,12 +194,9 @@ their units. The symbols are listed in alphabetical order.
 \noindent \begin{longtable*}{l l p{12cm}} \toprule
 \textbf{symbol} & \textbf{unit} & \textbf{description}\\
 \midrule 
-$A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area\\
-$A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over which
-heat is transferred in\\ 
 $\mathbf{a}_{i,t}$ & \si{\metre\per\second\squared} & The acceleration of agent \textit{i} at time t\\
-$\mathbf{A}_\mathbf{t}$ & -- & The alignment metric of flocking at time t \\
-$\mathbf{C}_\mathbf{t}$ & \si{\metre} & The flocking cohesion at time t\\
+$\mathbf{A}_t$ & -- & The alignment metric of flocking at time t \\
+$\mathbf{C}_t$ & \si{\metre} & The flocking cohesion at time t\\
 $\mathbf{F}_{i,t}$ & \si{\kilogram\metre\per\second\squared} & The forces acting on the agent \textit{i} at time t\\
 $\mathbf{F}_{align,i,t}$ & \si{\kilogram\metre\per\second\squared} & The alignment forces acting on the agent \textit{i} at time t\\
 $\mathbf{F}_{cohere,i,t}$ & \si{\kilogram\metre\per\second\squared} & The cohesion forces acting on the agent \textit{i} at time t\\
@@ -213,8 +211,8 @@ $k_g$  & \si{\kilogram\per\second\squared} & The weighting coefficient of goal s
 $k_o$  & \si{\kilogram\metre\squared\per\second\squared} & The weighting coefficient of obstacle avoidance forces \\
 $k_s$  & \si{\kilogram\metre\squared\per\second\squared} & The weighting coefficient of separation forces \\
 $N$ & -- & The total number of agent in the flocking model \\
-$\mathbf{m}$ & \si{\kilogram} & The mass of agent \\
-$\mathbf{M}$ & - & The selected numerical integration method \\
+$m$ & \si{\kilogram} & The mass of agent \\
+$M$ & - & The selected numerical integration method \\
 $\mathcal{N}_i$ & -- & The set of agents excluding agent \textit{i} \\
 $\mathcal{O}$ & -- & The set of obstacles \\
 $\mathcal{O}_k$ & -- & One of the obstacle in the obstacle set \\
@@ -222,12 +220,12 @@ $\mathbf{p}_{g}$ & \si{\metre} & The position of goal point \\
 $\mathbf{p}_{i,start}$ & \si{\metre} & The position of agent \textit{i} at start\\
 $\mathbf{p}_{i,t}$ & \si{\metre} & The position of agent \textit{i} at time t\\
 $\mathbf{p}_{k}$ & \si{\metre} & The position of obstacle \textit{k} \\
-$\bar{\mathbf{p}}_\mathbf{t}$ & \si{\metre} & The position of flocking center at time t \\
+$\bar{\mathbf{p}}_t$ & \si{\metre} & The position of flocking center at time t \\
 $\mathbb{R}^2$ & -- & The two-dimensional Euclidean space \\
-$\mathbf{r}_{k}$ & \si{\metre} & The radius of obstacle \textit{k} \\
+$r_k$ & \si{\metre} & The radius of obstacle \textit{k} \\
 $\Delta t$ & \si{\second} & The time step used by the numerical integration method \\
 $\mathbf{v}_{i,t}$ & \si{\metre\per\second} & The velocity of agent \textit{i} at time t\\
-$\bar{v}_\mathbf{t}$ & \si{\metre\per\second} & The mean speed of flocking at time t\\
+$\bar{v}_t$ & \si{\metre\per\second} & The mean speed of flocking at time t\\
 \bottomrule
 \end{longtable*}
 
@@ -264,10 +262,12 @@ significant impact on the accuracy, stability, and visual realism of flocking
 simulations.
 
 The following section presents an overview of the Software Requirements 
-Specification (SRS) for a system that simulates flocking behavior over complex 
-terrains using different numerical integration methods. This section describes 
-the purpose of the document, the scope of the requirements, the characteristics 
-of the intended reader, and the organization of the document.
+Specification (SRS) for Numerical Integration of Flocking Dynamics over 
+Structured Terrains(FlockingSimulator), a system that simulates flocking 
+behavior over complex terrains using different numerical integration methods. 
+This section describes the purpose of the document, the scope of the 
+requirements, the characteristics of the intended reader, and the organization 
+of the document.
 
 \subsection{Purpose of Document}
 
@@ -429,23 +429,21 @@ obstacle-avoidance forces, and goal-seeking forces.
 
 \subsubsection{Goal Statements}
 
-Given the length of timestep, the parameters of collective modules, the number 
-of agents, the numerical integration method, and the layout of obstacles, the 
-goal statements are:
+Given the length of timestep, the weight coefficients for the five forces 
+acting on each agent, the number of agents, the numerical integration method, 
+and the layout of obstacles, the goal statements are:
 
 \begin{itemize}
 
-\item[GS\refstepcounter{goalnum}\theassumpnum \label{GS_Simulation}:] 
-Support simulation of flocking dynamics in structured environments 
-with obstacles.
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{GS_Simulation}:] 
+Simulate the flocking dynamics.
 
-\item[GS\refstepcounter{goalnum}\theassumpnum \label{GS_Comparison}:] 
-Enable comparison of different numerical integration methods to 
-evaluate their effects on stability and collective behavior.
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{GS_Comparison}:] 
+Enable comparison of alternative numerical approaches and their impact on 
+flocking simulation.
 
-\item[GS\refstepcounter{goalnum}\theassumpnum \label{GS_Visualizaion}:] 
-Provide visualization of flocking dynamics to facilitate analysis 
-and understanding.
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{GS_Visualizaion}:] 
+Enable users to analyze flocking behavior through visual simulation outputs.
 
 \end{itemize}
 
@@ -456,11 +454,11 @@ Subsection~\ref{sec_instance}.  The information to understand the meaning of the
 instance models and their derivation is also presented, so that the instance
 models can be verified.
 
-\subsubsection{Types}
+% \subsubsection{Types}
 
-The solution is a computational, agent-based simulation system that models 
-flocking dynamics in a two-dimensional environment using discrete-time 
-numerical integration.
+% The solution is a computational, agent-based simulation system that models 
+% flocking dynamics in a two-dimensional environment using discrete-time 
+% numerical integration.
 
 % \subsubsection{Scope Decisions}
 
@@ -479,6 +477,9 @@ change [LC], in which the respective assumption is used.
 
 \begin{itemize}
 
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_2dOnly}:] 
+2D-Environment-Only: The system models agent motion in a two-dimensional only. 
+All positions, velocities, and forces are defined in 2D space.
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_agentMass}:] 
 Agent-Mass-Unit: Each agent has a unit mass. The mass value is not physically 
 meaningful and is used only to relate force and acceleration.
@@ -488,10 +489,10 @@ Circular-Obstacles: All obstacles are circular in shape.
 Obstacle-Influence-Radius: The influence radius of an obstacle is twice its 
 actual radius.
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_goalPosition}:] 
-Goal-Position: The goal position is fixed at (500,500)(m).
+Goal-Position: The goal position is fixed at (500, 500)(m, m).
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_startPosition}:] 
 Start-Position: The agents' starting positions are randomly generated within 
-a circle of radius 5m centered at (0, 0)(m).
+a circle of radius 5m centered at (0, 0)(m, m).
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_similarAgent}:] 
 Similar-Agent: All agents share identical intrinsic properties, including 
 mass and motion dynamics. The same equations are used for computing position, 
@@ -520,9 +521,9 @@ Label & Newton's second law of motion \\
 Equation & $\mathbf{a}=\frac{\mathbf{F}}{m}$\\
 \hline
 Description &
-\textbf{F} is the total force acting on an individual agent($\frac{kg \cdot m}{s^2}$), \\
-& \textit{m} is the agent's mass(kg),\\
-& \textbf{a} is acceleration of the agent($\frac{m}{s^2}$). \\
+\textbf{F} is the total force acting on an individual agent ($\frac{kg \cdot m}{s^2}$), \\
+& \textit{m} is the agent's mass (kg),\\
+& \textbf{a} is acceleration of the agent ($\frac{m}{s^2}$). \\
 \hline
 Notes & 
 It explains the relationship between the forces acting on an agent and its acceleration.\\
@@ -544,18 +545,20 @@ Ref.\ By & \iref{TimeStepAcc}\\
 \rowcolor[gray]{0.9}
 RefName & TM\refstepcounter{theorynum}\thetheorynum \label{ConTimeDy}:ConTimeDy\\
 \hline
-Label & Continuous-time agent dynamics \\
+Label & Continuous-time agent dynamics of position \\
 \hline
-Equation & $\frac{d\mathbf{p}}{dt}=\mathbf{v}$\\
+Equation & $\frac{d\mathbf{p}}{dt}=\mathbf{v}$, $\frac{d\mathbf{v}}{dt}=\mathbf{a}$\\
 \hline
 Description &
-\textit{d}\textbf{p} is the change in position(m), \\
-& \textit{dt} is a change in time(s),\\
-& \textbf{v} is the agent's velocity($\frac{m}{s}$), \\
+\textit{d}\textbf{p} is the change in position (m, m), \\
+& \textit{dt} is a change in time (s),\\
+& \textbf{v} is the agent's velocity ($\frac{m}{s}$), \\
+& \textit{d}\textbf{v} is the change in velocity ($\frac{m}{s}$), \\
+& \textbf{a} is the agent's acceleration ($\frac{m}{s ^ 2}$). \\
 \hline
 Notes & 
 The above equation provides the velocity formulation for continuous-time \\
-& dynamics. In practical systems, velocity is computed in a discrete manner(XXX). \\
+& dynamics. In practical systems, velocity is computed in a discrete manner. \\
 \hline
 Source & \href{https://en.wikipedia.org/wiki/Velocity}{Definition of Velocity}\\
 \hline
@@ -590,11 +593,11 @@ $\mathbf{F}_{i,t} = \mathbf{F}_{align,i,t} + \mathbf{F}_{cohere,i,t} + \mathbf{F
 \hline
 Description &
 This equation shows the detailed composition of the forces acting on each agent. \\
-& $\mathbf{F}_{align,i,t}$ is the alignment force in agent \textit{i} within the group($\frac{kg \cdot m}{s^2}$).\\
-& $\mathbf{F}_{cohere,i,t}$ is the cohesion force in agent \textit{i} within the group($\frac{kg \cdot m}{s^2}$).\\
-& $\mathbf{F}_{separate,i,t}$ is the separation force in agent \textit{i} within the group($\frac{kg \cdot m}{s^2}$).\\
-& $\mathbf{F}_{obs,i,t}$ is the force in agent \textit{i} generated by the agent to avoid obstacles($\frac{kg \cdot m}{s^2}$).\\
-& $\mathbf{F}_{goal,i,t}$ is the force in agent \textit{i} generated by the agent to move toward the goal($\frac{kg \cdot m}{s^2}$).\\
+& $\mathbf{F}_{align,i,t}$ is the alignment force in agent \textit{i} within the group ($\frac{kg \cdot m}{s^2}$).\\
+& $\mathbf{F}_{cohere,i,t}$ is the cohesion force in agent \textit{i} within the group ($\frac{kg \cdot m}{s^2}$).\\
+& $\mathbf{F}_{separate,i,t}$ is the separation force in agent \textit{i} within the group ($\frac{kg \cdot m}{s^2}$).\\
+& $\mathbf{F}_{obs,i,t}$ is the force in agent \textit{i} generated by the agent to avoid obstacles ($\frac{kg \cdot m}{s^2}$).\\
+& $\mathbf{F}_{goal,i,t}$ is the force in agent \textit{i} generated by the agent to move toward the goal ($\frac{kg \cdot m}{s^2}$).\\
 \hline
 Source & \href{https://en.wikipedia.org/wiki/Boids}{The basic rules of flocking behavior}\\
 \hline
@@ -618,11 +621,11 @@ models. The dimension of each quantity is also given.
 \rowcolor[gray]{0.9}
 Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{SingleObstacle}:singleObstacle\\
 \hline
-Label& The single obstacle.\\
+Label& A single obstacle.\\
 \hline
-Symbol & $\mathbf{p}_k, \mathbf{r}_k$\\
+Symbol & $\mathcal{O}_k$\\
 \hline
-SI Units & \si{\metre}\\
+SI Units & -- \\
 \hline
 Equation& $\mathcal{O}_k = 
 \left\{ \mathbf{x} \in \mathbb{R}^2 \;\middle|\; \|\mathbf{x} - \mathbf{p}_k\| \le r_k \right\}$\\
@@ -630,8 +633,8 @@ Equation& $\mathcal{O}_k =
 Description & 
 It is the parameters of a single obstacle, where obstacles are restricted to \\
 & circular shapes(\aref{A_obsShape}). \\
-& $\mathbf{p}_k$ is the center position,\\
-& $\mathbf{r}_k$ is the obstacle radius.\\
+& $\mathbf{p}_k$ is the center position (m, m),\\
+& $r_k$ is the obstacle radius (m).\\
 \hline
 Sources& -- \\
 \hline
@@ -651,16 +654,16 @@ Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{ObstacleSet}:obstacle
 \hline
 Label& The set of obstacles.\\
 \hline
-Symbol & $\mathcal{O}_k$\\
+Symbol & $\mathcal{O}$\\
 \hline
-SI Units & \si{\metre}\\
+SI Units & --\\
 \hline
-Equation& $\{\mathcal{O}_k\}_{k=1}^M \subset \mathbb{R}^2$\\
+Equation& $\mathcal{O} = \left\{ \mathcal{O}_k \;\middle|\; k = 1, 2,..., M \right\}$\\
 \hline
 Description & 
-It is a set of \textit{M} obstacles, where M is specified by the user, \\
-& with each obstacle having user-defined position and size.\\
-& $\mathbb{R}^2$ is the two-dimensional Euclidean space.\\
+It is a set of all obstacles, and each obstacle having user-defined position and size. \\
+& $\mathcal{O}_k$ is the obstacle \textit{k}.\\
+& $M$ is the number of obstacles, where $M$ is specified by the user.\\
 \hline
 Sources& -- \\
 \hline
@@ -683,14 +686,14 @@ Label& The position of start point for agent \textit{i}.\\
 \hline
 Symbol &$\mathbf{p}_{i,start}$\\
 \hline
-SI Units & \si{\metre}\\
+SI Units & \si{(\metre, \metre)}\\
 \hline
 Equation& $\mathbf{p}_{i,start} \in \left\{ \mathbf{x} \in \mathbb{R}^2 \;\middle|\; \|\mathbf{x} - 0\| \le 5 \right\}$\\
 \hline
 Description & 
 It is the position of start point for agent \textit{i}.\\
 & $\mathbb{R}^2$ is the two-dimensional Euclidean space.\\
-& It will randomly be generated within a circle of radius 5m centered at (0, 0)(m).\\
+& It will randomly be generated within a circle of radius 5m centered at (0, 0).\\
 \hline
 Sources& -- \\
 \hline
@@ -719,10 +722,12 @@ Equation& $\mathbf{F}_{align,i,t} =
 k_a\left(\frac{1}{|\mathcal{N}_i|}\sum_{j \in \mathcal{N}_i} \mathbf{v}_{j,t}-\mathbf{v}_{i,t}\right)$\\
 \hline
 Description & 
-It ensures that agents in the flocking system maintain similar velocities.\\
-& $k_a$ is the corresponding weighting coefficient($\frac{kg}{s}$),\\
+It shows the force acting on agent \textit{i} at time \textit{t} that drives \\
+& it to align with other agents in the flocking. \\
+& $k_a$ is the corresponding weighting coefficient ($\frac{kg}{s}$),\\
 & $\mathcal{N}_i$ is the set of other agents in the group,\\
-& $\mathbf{v}_{i,t}$ is the agent \textit{i}'s velocity($\frac{m}{s}$).\\
+& $|\mathcal{N}_i|$ is the number of other agents in the group,\\
+& $\mathbf{v}_{i,t}$ is the agent \textit{i}'s velocity at time \textit{t} ($\frac{m}{s}$).\\
 \hline
 Sources& \href{https://en.wikipedia.org/wiki/Boids}{Definition of Alignment Force}\\
 \hline
@@ -751,10 +756,12 @@ Equation& $\mathbf{F}_{cohere,i,t}
 = k_c\left(\frac{1}{|\mathcal{N}_i|}\sum_{j \in \mathcal{N}_i} \mathbf{p}_{j,t}-\mathbf{p}_{i,t}\right)$\\
 \hline
 Description & 
-It ensures that agents in the flocking system do not drift too far away from other agents.\\
-& $k_c$ is the corresponding weighting coefficient($\frac{kg}{s^2}$),\\
+It shows the force acting on agent \textit{i} at time \textit{t} that ensures \\
+& it do not drift too far away from other agents in the flocking. \\
+& $k_c$ is the corresponding weighting coefficient ($\frac{kg}{s^2}$),\\
 & $\mathcal{N}_i$ is the set of other agents in the group,\\
-& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position(m).\\
+& $|\mathcal{N}_i|$ is the number of other agents in the group,\\
+& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position at time \textit{t} (m, m).\\
 \hline
 Sources& \href{https://en.wikipedia.org/wiki/Boids}{Definition of Cohesion Force}\\
 \hline
@@ -783,10 +790,12 @@ Equation& $\mathbf{F}_{separate,i,t}
 = k_s\sum_{j \in \mathcal{N}_i}\frac{\mathbf{p}_{i,t}-\mathbf{p}_{j,t}}{\|\mathbf{p}_{i,t} - \mathbf{p}_{j,t}\|^2}$\\
 \hline
 Description & 
-It ensures that agents in the flocking system do not get too close to other agents.\\
-& $k_s$ is the corresponding weighting coefficient($\frac{kg \cdot m^2}{s^2}$),\\
+It shows the force acting on agent \textit{i} at time \textit{t} that ensures \\
+& it do not get too close to other agents in the flocking. \\
+& $k_s$ is the corresponding weighting coefficient ($\frac{kg \cdot m^2}{s^2}$),\\
 & $\mathcal{N}_i$ is the set of other agents in the group,\\
-& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position(m).\\
+& $|\mathcal{N}_i|$ is the number of other agents in the group,\\
+& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position at time \textit{t} (m, m).\\
 \hline
 Sources& \href{https://en.wikipedia.org/wiki/Boids}{Definition of Separation Force}\\
 \hline
@@ -816,12 +825,13 @@ Equation& $\mathbf{F}_{obs,i,t} =
 \frac{\mathbf{p}_{i,t} - \mathbf{p}_k}{\|\mathbf{p}_{i,t} - \mathbf{p}_k\|}$\\
 \hline
 Description & 
-It helps agent \textit{i} avoid collisions with obstacles.\\
-& $k_o$ is the corresponding weighting coefficient($\frac{kg \cdot m^2}{s^2}$),\\
+It shows the force acting on agent \textit{i} at time \textit{t} that helps \\
+& it avoid collisions with obstacles. \\
+& $k_o$ is the corresponding weighting coefficient ($\frac{kg \cdot m^2}{s^2}$),\\
 & $\mathcal{O}$ is the set of obstacles,\\
-& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position(m).\\
-& $\mathbf{p}_k$ is the center position of obstacle \textit{k}(m).\\
-& $\mathbf{r}_k$ is the influence radius of obstacle \textit{k}(m).\\
+& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position at time \textit{t} (m, m).\\
+& $\mathbf{p}_k$ is the center position of obstacle \textit{k} (m, m).\\
+& $r_k$ is the influence radius of obstacle \textit{k} (m).\\
 & In order for this formula to work, it is assumed that all obstacles have a fixed influence radius\\
 & (\aref{A_obsInfluence}).\\
 \hline
@@ -852,10 +862,11 @@ Equation& $\mathbf{F}_{goal,i,t} =
 k_g \, \frac{\mathbf{p}_g - \mathbf{p}_{i,t}}{\|\mathbf{p}_g - \mathbf{p}_{i,t}\|}$\\
 \hline
 Description & 
-It helps agent \textit{i} move toward the goal.\\
+It shows the force acting on agent \textit{i} at time \textit{t} that helps \\
+& it move toward the goal. \\
 & $k_g$ is the corresponding weighting coefficient($\frac{kg \cdot m}{s^2}$),\\
-& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position(m).\\
-& $\mathbf{p}_g$ is the goal's position(m)(\aref{A_goalPosition}).\\
+& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position at time \textit{t} (m, m).\\
+& $\mathbf{p}_g$ is the goal's position (m, m) (\aref{A_goalPosition}).\\
 \hline
 Sources& --\\
 \hline
@@ -874,19 +885,19 @@ Ref.\ By &  \dref{ForceCombination}\\
 \rowcolor[gray]{0.9}
 Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{MeanSpeed}:meanSpeed\\
 \hline
-Label& The mean speed of flocking at time t.\\
+Label& The mean speed of flocking at time \textit{i}.\\
 \hline
-Symbol &$\bar{v}_\mathbf{t}$\\
+Symbol &$\bar{v}_t$\\
 \hline
 SI Units & \si{\metre\per\second}\\
 \hline
-Equation& $\bar{v}_\mathbf{t} = \frac{1}{N} \sum_{i=1}^{N} \|\mathbf{v}_{i,t}\|$\\
+Equation& $\bar{v}_t = \frac{1}{N} \sum_{i=1}^{N} \|\mathbf{v}_{i,t}\|$\\
 \hline
 Description & 
 It is one of the monitoring metrics of the flocking state, the average velocity \\
 & of all agents.\\
 & $N$ is the number of agents,\\
-& $\mathbf{v}_{i,t}$ is the agent \textit{i}'s velocity at time t($\frac{m}{s}$).\\
+& $\mathbf{v}_{i,t}$ is the agent \textit{i}'s velocity at time t ($\frac{m}{s}$).\\
 \hline
 Sources& \href{https://en.wikipedia.org/wiki/Flocking}{Definition of Flocking}\\
 \hline
@@ -905,20 +916,20 @@ Ref.\ By & \rref{R_FlockingStatus}\\
 \rowcolor[gray]{0.9}
 Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{AlignMetric}:alignMetric\\
 \hline
-Label& The alignment metric of flocking at time t.\\
+Label& The alignment metric of flocking at time \textit{t}.\\
 \hline
-Symbol &$\mathbf{A}_\mathbf{t}$\\
+Symbol &$\mathbf{A}_t$\\
 \hline
 SI Units & -- \\
 \hline
-Equation& $\mathbf{A}_\mathbf{t} = 
+Equation& $\mathbf{A}_t = 
 \|\frac{1}{N} \sum_{i=1}^{N} \frac{\mathbf{v}_{i,t}}{\|\mathbf{v}_{i,t}\|}\|$\\
 \hline
 Description & 
 It is one of the monitoring metrics of the flocking state, the alignment metric \\
 & of all agents.\\
 & $N$ is the number of agents,\\
-& $\mathbf{v}_{i,t}$ is the agent \textit{i}'s velocity at time t($\frac{m}{s}$).\\
+& $\mathbf{v}_{i,t}$ is the agent \textit{i}'s velocity at time t ($\frac{m}{s}$).\\
 \hline
 Sources& \href{https://en.wikipedia.org/wiki/Flocking}{Definition of Flocking Alignment}\\
 \hline
@@ -937,18 +948,18 @@ Ref.\ By & \rref{R_FlockingStatus}\\
 \rowcolor[gray]{0.9}
 Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{FlockingCenter}:flockingCenter\\
 \hline
-Label& The position of flocking center at time t.\\
+Label& The position of flocking center at time \textit{t}.\\
 \hline
-Symbol &$\bar{\mathbf{p}}_\mathbf{t}$\\
+Symbol &$\bar{\mathbf{p}}_t$\\
 \hline
 SI Units & \si{\metre}\\
 \hline
-Equation& $\bar{\mathbf{p}}_\mathbf{t} = \frac{1}{N} \sum_{i=1}^{N} \mathbf{p}_{i,t}$\\
+Equation& $\bar{\mathbf{p}}_t = \frac{1}{N} \sum_{i=1}^{N} \mathbf{p}_{i,t}$\\
 \hline
 Description & 
 It is the center of all agents.\\
 & $N$ is the number of agents,\\
-& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position at time t(m).\\
+& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position at time \textit{t} (m, m).\\
 \hline
 Sources& --\\
 \hline
@@ -967,20 +978,20 @@ Ref.\ By & \ddref{FlockingCohesion}\\
 \rowcolor[gray]{0.9}
 Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{FlockingCohesion}:flockingCohesion\\
 \hline
-Label& The flocking cohesion at time t.\\
+Label& The flocking cohesion at time \textit{t}.\\
 \hline
-Symbol &$\mathbf{C}_\mathbf{t}$\\
+Symbol &$\mathbf{C}_t$\\
 \hline
 SI Units & \si{\metre}\\
 \hline
-Equation& $\mathbf{C}_\mathbf{t} = 
-\frac{1}{N} \sum_{i=1}^{N} \|(\mathbf{p}_{i,t} - \bar{\mathbf{p}}(\mathbf{t}))\|$\\
+Equation& $\mathbf{C}_t = 
+\frac{1}{N} \sum_{i=1}^{N} \|(\mathbf{p}_{i,t} - \bar{\mathbf{p}}_t)\|$\\
 \hline
 Description & 
 It is one of the monitoring metrics of the flocking state, the flocking cohesion.\\
 & $N$ is the number of agents,\\
-& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position at time t(m).\\
-& $\bar{\mathbf{p}}_\mathbf{t}$ is the center of flocking at time t(m).\\
+& $\mathbf{p}_{i,t}$ is the agent \textit{i}'s position at time \textit{t} (m, m).\\
+& $\bar{\mathbf{p}}_t$ is the center of flocking at time \textit{t} (m, m).\\
 \hline
 Sources& \href{https://en.wikipedia.org/wiki/Flocking}{Definition of Flocking Cohesion}\\
 \hline
@@ -988,6 +999,85 @@ Ref.\ By & \rref{R_FlockingStatus}\\
 \hline
 \end{tabular}
 \end{minipage}\\
+
+~\newline
+
+\subsubsection{Data Types}\label{sec_datatypes}
+
+This section collects and defines all the data types needed to document the
+models.
+
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Type Name & EEuler\\
+  \hline
+  Type Def & Explicit Euler Method\\
+  \hline
+  Description & 
+  A first-order explicit numerical integration method that updates the system 
+  state using the current value of the derivative. \\
+  \hline
+  Sources & \href{https://en.wikipedia.org/wiki/Euler_method}{Euler Method} \\
+  \hline
+  Ref.\ By & \iref{ExplicitEuler}\\
+  \hline
+\end{tabular}
+\end{minipage}\\
+
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Type Name & RK4\\
+  \hline
+  Type Def & Runge-Kutta 4th Order Method\\
+  \hline
+  Description & 
+  A fourth-order explicit numerical integration method that computes a weighted 
+  average of four intermediate derivative evaluations within a single time step. \\
+  \hline
+  Sources & \href{https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods}{Runge-Kutta 4 Method} \\ 
+  \hline
+  Ref.\ By & \iref{RungeKutta4}\\
+  \hline
+\end{tabular}
+\end{minipage}\\
+
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Type Name & SIEuler\\
+  \hline
+  Type Def & Semi-Implicit Euler Method\\
+  \hline
+  Description & 
+  A first-order numerical integration method commonly used in physics-based 
+  simulations, where velocity is updated using current acceleration and 
+  position is then updated using the new velocity. \\
+  \hline
+  Sources & \href{https://en.wikipedia.org/wiki/Semi-implicit_Euler_method}{Semi-Implicit Euler Method} \\
+  \hline
+  Ref.\ By & \iref{SemiImplicitEuler}\\
+  \hline
+\end{tabular}
+\end{minipage}\\
+
+~\newline
 
 \subsubsection{Instance Models} \label{sec_instance}    
 
@@ -1012,18 +1102,18 @@ Number& IM\refstepcounter{instnum}\theinstnum \label{TimeStepAcc}:timeStepAccele
 \hline
 Label& The acceleration of agent \textit{i} at time t\\
 \hline
-Input & $\mathbf{F}_{i,t}$, $\mathbf{m}$ \\
+Input & $\mathbf{F}_{i,t}$, $m$ \\
 \hline
 Output& $\mathbf{a}_{i,t}$ \\
 \hline
 Equation&
-$\mathbf{a}_{i,t} = \frac{\mathbf{F}_{i,t}}{\mathbf{m}}$ \\
+$\mathbf{a}_{i,t} = \frac{\mathbf{F}_{i,t}}{m}$ \\
 \hline
 Description & 
 The acceleration of agent \textit{i} at time t is computed using Newton's Second Law. \\
-& $\mathbf{F}_{i,t}$ is the force acting on agent \textit{i} at time t, \\
-& $\mathbf{m}$ is the mass of agent \textit{i}. For this system, each agent's \\
-& mass is treated as a unit value(\aref{A_agentMass}).\\
+& $\mathbf{F}_{i,t}$ is the force acting on agent \textit{i} at time \textit{t}, \\
+& $m$ is the mass of agent \textit{i}. For this system, each agent's mass is 
+treated as a unit value(\aref{A_agentMass}).\\
 \hline
 Sources& -- \\
 \hline
@@ -1057,6 +1147,7 @@ The continuous-time system is approximated using an input time step $\Delta t$. 
 & $\mathbf{p}_{i,t}$ is the position of agent \textit{i} at time t, \\
 & $\mathbf{v}_{i,t}$ is the velocity of agent \textit{i} at time t, \\
 & $\mathbf{a}_{i,t}$ is the acceleration of agent \textit{i} at time t, \\
+& It is applied to solve the ODE system defined in \iref{ConTimeDy}.\\
 \hline
 Sources& \href{https://en.wikipedia.org/wiki/Euler_method}{Euler Method} \\
 \hline
@@ -1095,6 +1186,7 @@ The continuous-time system is approximated using an input time step $\Delta t$. 
 & $\mathbf{p}_{i,t}$ is the position of agent \textit{i} at time t, \\
 & $\mathbf{v}_{i,t}$ is the velocity of agent \textit{i} at time t, \\
 & $\mathbf{a}_{i,t}$ is the acceleration of agent \textit{i} at time t, \\
+& It is applied to solve the ODE system defined in \iref{ConTimeDy}.\\
 \hline
 Sources& \href{https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods}{Runge-Kutta 4 Method} \\
 \hline
@@ -1128,6 +1220,7 @@ The continuous-time system is approximated using an input time step $\Delta t$. 
 & $\mathbf{p}_{i,t}$ is the position of agent \textit{i} at time t, \\
 & $\mathbf{v}_{i,t}$ is the velocity of agent \textit{i} at time t, \\
 & $\mathbf{a}_{i,t}$ is the acceleration of agent \textit{i} at time t, \\
+& It is applied to solve the ODE system defined in \iref{ConTimeDy}.\\
 \hline
 Sources& \href{https://en.wikipedia.org/wiki/Semi-implicit_Euler_method}{Semi-Implicit Euler Method} \\
 \hline
@@ -1161,7 +1254,7 @@ Table~\ref{TblSpecParams}.
   \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
                              \textbf{Typical Value} & \textbf{Uncertainty}\\
   \midrule 
-  $\mathbf{M}$ & - & $\mathbf{M} \in \{\text{EEuler}, \text{RK4}, \text{SIEuler}\}$ & $\text{SIEuler}$ & 0\\
+  $M$ & - & $M \in \{\text{EEuler}, \text{RK4}, \text{SIEuler}\}$ & $\text{SIEuler}$ & 0\\
   $N$ & $N \geq 0$ & $N^{\text{min}} \leq N \leq N^{\text{max}}$ & 100 & 0\\
   $\Delta t$ & $\Delta t > 0$ & ${\Delta t}^{\text{min}} \leq \Delta t \leq {\Delta t}^{\text{max}}$ & 0.01 & 0\\
   $k_a$ & $k_a \geq 0$ & $k^{\text{min}} \leq k_a \leq k^{\text{max}}$ & 0.5 & 0\\
@@ -1170,7 +1263,7 @@ Table~\ref{TblSpecParams}.
   $k_o$ & $k_o \geq 0$ & $k^{\text{min}} \leq k_o \leq k^{\text{max}}$ & 0.5 & 0\\
   $k_g$ & $k_g \geq 0$ & $k^{\text{min}} \leq k_g \leq k^{\text{max}}$ & 0.5 & 0\\
   $\mathbf{p}_k$ & $\mathbf{p}_k \subset \mathbb{R}^2$ & $\mathbf{p}_k = (x, y), p^{\text{min}} < x, y < p^{\text{max}}$ & -- & 0\\
-  $\mathbf{r}_k$ & $\mathbf{r}_k > 0$ & $\mathbf{r}^{\text{min}} \leq \mathbf{r}_k \leq \mathbf{r}^{\text{max}}$ & 50 & 0\\
+  $r_k$ & $r_k > 0$ & $r^{\text{min}} \leq r_k \leq r^{\text{max}}$ & 50 & 0\\
   \bottomrule
 \end{longtable*}
 \end{table}
@@ -1182,7 +1275,7 @@ Table~\ref{TblSpecParams}.
   \toprule
   \textbf{Var} & \textbf{Value} \\
   \midrule 
-  $N^{\text{min}}$ & 10\\
+  $N^{\text{min}}$ & 1\\
   $N^{\text{max}}$ & 5000\\
   ${\Delta t}^{\text{min}}$ & 0.005 \si{\second}\\
   ${\Delta t}^{\text{max}}$ & 0.1 \si{\second}\\
@@ -1201,6 +1294,10 @@ Table~\ref{TblSpecParams}.
 The Table~\ref{TblOutputVar} shows the data constraints on the output variables. 
 The column for physical constraints gives the physical limitations on the range 
 of values that can be taken by the variable.
+
+The system does not impose an energy conservation constraint, as flocking 
+dynamics typically model the collective motion of biological organisms or 
+autonomous agents, for which strict energy conservation is not applicable.
 
 \begin{table}[!h]
 \caption{Output Variables} \label{TblOutputVar}
@@ -1243,8 +1340,8 @@ Agents-Calculate-Values: Calculate all agents positions \textbf{p} and velocitie
 step using the method selected in \rref{R_MethodChoose}.
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_FlockingStatus}:]
-Flocking-Calculate-Values: Calculate the following values at each time step: $\bar{v}_\mathbf{t}$(\ddref{MeanSpeed}), 
-$\mathbf{A}_\mathbf{t}$(\ddref{AlignMetric}) and $\mathbf{C}_\mathbf{t}$(\ddref{FlockingCohesion}).
+Flocking-Calculate-Values: Calculate the following values at each time step: $\bar{v}_t$(\ddref{MeanSpeed}), 
+$\mathbf{A}_t$(\ddref{AlignMetric}) and $\mathbf{C}_t$(\ddref{FlockingCohesion}).
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_AniamtionOutput}:]
 Output-Animation: Use the data generated in \rref{R_AgentStatus} to output the flocking animation.
@@ -1270,7 +1367,7 @@ Output-Graphs: Use the data generated in \rref{R_FlockingStatus} to output line 
   $k_o$ & The weight parameter of the obstacle avoidance force & \si{\kilogram\meter^2\per\second^2}\\
   $k_g$ & The weight parameter of the goal-seeking force & \si{\kilogram\meter\per\second^2}\\
   $\mathbf{p}_k$ & center position of obstacle \textit{k} & \si{\meter} \\
-  $\mathbf{r}_k$ & center radius of obstacle \textit{k} & \si{\meter} \\
+  $r_k$ & center radius of obstacle \textit{k} & \si{\meter} \\
   \bottomrule
 \end{longtable*}
 \end{table}
@@ -1293,10 +1390,13 @@ Tests of flocking behavior shall confirm that agents follow the flocking rules.
 validation plan.
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Usability}:] 
-\textbf{Usability}: The system shall provide a graphical user interface that 
-allows users to visualize and modify simulation input parameters, such as the 
-number of agents and obstacle layout. And achieve an average score of at least 
-70\% on user questionnaires related to realism of flocking simulation.
+\textbf{Usability}: Usability: The system shall enable users to understand and 
+adjust simulation input parameters, including the number of agents and the 
+obstacle configuration.
+
+\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Realism}:] 
+\textbf{Realism}: Achieve an average score of at least 70\% on user 
+questionnaires related to realism of flocking simulation.
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Maintainability}:]
 \textbf{Maintainability}: If there is any change is made to the finished 
@@ -1325,6 +1425,9 @@ from their initial positions.
 This section lists the likely changes to be made to the software.
 
 \noindent \begin{itemize}
+\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_EnvChange}:]
+\aref{A_2dOnly} - The simulation environment may be extended from 2D to 3D.
+
 \item[LC\refstepcounter{lcnum}\thelcnum\label{LC_ObsShapeChange}:]
 \aref{A_obsShape} - Obstacles may not be limited to circular shapes.
 
@@ -1375,34 +1478,35 @@ Rows represent items that trace to source items listed in columns.
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
-	& \aref{A_agentMass}& \aref{A_obsShape}& \aref{A_obsInfluence}
+	& \aref{A_2dOnly}& \aref{A_agentMass}& \aref{A_obsShape}& \aref{A_obsInfluence}
   & \aref{A_goalPosition}& \aref{A_startPosition}& \aref{A_similarAgent} \\
 \hline
-\tref{NewtonSecLaw}              & & & & & & \\ \hline
-\tref{ConTimeDy}                 & & & & & & \\ \hline
-\dref{ForceCombination}          & & & & & & \\ \hline
-\ddref{SingleObstacle}           & &X& & & & \\ \hline
-\ddref{ObstacleSet}              & & & & & & \\ \hline
-\ddref{StartPosition}            & & & & & & \\ \hline
-\ddref{AlignForce}               & & & & & & \\ \hline
-\ddref{CohereForce}              & & & & & & \\ \hline
-\ddref{SeparateForce}            & & & & & & \\ \hline
-\ddref{ObsAvoidForce}            & & &X& & & \\ \hline
-\ddref{GoalSeekForce}            & & & &X& & \\ \hline
-\ddref{MeanSpeed}                & & & & & & \\ \hline
-\ddref{AlignMetric}              & & & & & & \\ \hline
-\ddref{FlockingCenter}           & & & & & & \\ \hline
-\ddref{FlockingCohesion}         & & & & & & \\ \hline
-\iref{TimeStepAcc}               & & & & & & \\ \hline
-\iref{ExplicitEuler}             & & & & & & \\ \hline
-\iref{RungeKutta4}               & & & & & & \\ \hline
-\iref{SemiImplicitEuler}         & & & & & & \\ \hline
-\lcref{LC_ObsShapeChange}        & &X& & & & \\ \hline
-\lcref{LC_InfluenceRadiusChange} & & &X& & & \\ \hline
-\lcref{LC_GoalChange}            & & & &X& & \\ \hline
-\lcref{LC_StartAreaChange}       & & & & &X& \\ \hline
-\lcref{LC_NoMeanMass}            &X& & & & & \\ \hline
-\lcref{LC_agentHomogeneous}      & & & & & &X\\
+\tref{NewtonSecLaw}              & & & & & & & \\ \hline
+\tref{ConTimeDy}                 & & & & & & & \\ \hline
+\dref{ForceCombination}          & & & & & & & \\ \hline
+\ddref{SingleObstacle}           &X& &X& & & & \\ \hline
+\ddref{ObstacleSet}              & & & & & & & \\ \hline
+\ddref{StartPosition}            &X& & & & & & \\ \hline
+\ddref{AlignForce}               &X& & & & & & \\ \hline
+\ddref{CohereForce}              &X& & & & & & \\ \hline
+\ddref{SeparateForce}            &X& & & & & & \\ \hline
+\ddref{ObsAvoidForce}            &X& & &X& & & \\ \hline
+\ddref{GoalSeekForce}            &X& & & &X& & \\ \hline
+\ddref{MeanSpeed}                &X& & & & & & \\ \hline
+\ddref{AlignMetric}              &X& & & & & & \\ \hline
+\ddref{FlockingCenter}           &X& & & & & & \\ \hline
+\ddref{FlockingCohesion}         &X& & & & & & \\ \hline
+\iref{TimeStepAcc}               & & & & & & & \\ \hline
+\iref{ExplicitEuler}             &X& & & & & & \\ \hline
+\iref{RungeKutta4}               &X& & & & & & \\ \hline
+\iref{SemiImplicitEuler}         &X& & & & & & \\ \hline
+\iref{LC_EnvChange}              &X& & & & & & \\ \hline
+\lcref{LC_ObsShapeChange}        & & &X& & & & \\ \hline
+\lcref{LC_InfluenceRadiusChange} & & & &X& & & \\ \hline
+\lcref{LC_GoalChange}            & & & & &X& & \\ \hline
+\lcref{LC_StartAreaChange}       & & & & & &X& \\ \hline
+\lcref{LC_NoMeanMass}            & &X& & & & & \\ \hline
+\lcref{LC_agentHomogeneous}      & & & & & & &X\\
 \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
