@@ -160,7 +160,7 @@ and efficiency across different numerical integration methods.
 
 \subsection{Relevant Documentation}
 
-The related documents include the Problem Statement(\citet{ProblemStatement}), 
+The related documents include the Problem Statement (\citet{ProblemStatement}), 
 which describes the proposed idea of the project, the Software Requirements 
 Specification (\citet{SRS}), which specifies the software requirements in 
 detail, and \citet{MIS}.
@@ -168,11 +168,11 @@ detail, and \citet{MIS}.
 \section{Plan}
 
 This section presents the test plan for the software. It includes the 
-Verification and Validation team(\ref{vnv_team}), the SRS verification 
-plan(\ref{srs_verif}), the design verification plan(\ref{design_verif}), 
-the implementation verification plann(\ref{vnv_verif}), the automated testing 
-and verification tools(\ref{auto_tool}), and the overall software validation 
-plan(\ref{soft_valid}).
+Verification and Validation team (\ref{vnv_team}), the SRS verification 
+plan (\ref{srs_verif}), the design verification plan (\ref{design_verif}), 
+the implementation verification plan (\ref{vnv_verif}), the automated testing 
+and verification tools (\ref{auto_tool}), and the overall software validation 
+plan (\ref{soft_valid}) .
 
 \subsection{Verification and Validation Team} \label{vnv_team}
 
@@ -181,7 +181,7 @@ plan(\ref{soft_valid}).
 Create and manage all project documents, implement the software, and test with 
 the VnV plan to ensure the quality of the software.
 
-\item Dr. Spencer Smith - Supervisor \\
+\item Dr.\ Spencer Smith - Supervisor \\
 Review all documents.
 
 \item Mohsen Bakhtiari - Domain Expert \\
@@ -191,23 +191,23 @@ Review all documents.
 \subsection{SRS Verification} \label{srs_verif}
 
 The SRS Verification is done through a structured review process. First, 
-Supervisor(Dr. Spencer Smith) and Domain Expert(Mohsen Bakhtiari) will review 
-using the \citet{SRSChecklist}, which is designed by Dr. Spencer Smith. Feedback 
-should be create as GitHub issues. The developer(Yibing Mei) is responsible to 
+Supervisor (Dr.\ Spencer Smith) and Domain Expert (Mohsen Bakhtiari) will review 
+using the \citet{SRSChecklist}, which is designed by Dr.\ Spencer Smith. Feedback 
+should be create as GitHub issues. The developer (Yibing Mei) is responsible to 
 address issues to ensure the quality of SRS document.
 
 \subsection{Design Verification} \label{design_verif}
 
-The design will be verified by Supervisor(Dr. Spencer Smith) and Domain 
-Expert(Mohsen Bakhtiari). Feedback will be provided through the creation of 
-issues on GitHub. The developer(Yibing Mei) will review, address, and resolve 
+The design will be verified by Supervisor (Dr.\ Spencer Smith) and Domain 
+Expert (Mohsen Bakhtiari). Feedback will be provided through the creation of 
+issues on GitHub. The developer (Yibing Mei) will review, address, and resolve 
 these issues.
 
 \subsection{Verification and Validation Plan Verification} \label{vnv_verif}
 
-The VnV plan will be reviewed by Supervisor(Dr. Spencer Smith) and Domain 
-Expert(Mohsen Bakhtiari) following the \citet{VnVChecklist}. Feedback will be 
-communicated through the creation of GitHub issues. The developer(Yibing Mei) 
+The VnV plan will be reviewed by Supervisor (Dr.\ Spencer Smith) and Domain 
+Expert (Mohsen Bakhtiari) following the \citet{VnVChecklist}. Feedback will be 
+communicated through the creation of GitHub issues. The developer (Yibing Mei) 
 will address the reported issues and update the document accordingly.
 
 \subsection{Implementation Verification}
@@ -229,7 +229,7 @@ built-in tools and package will be used for automated testing.
 
 \item ode Coverage: Unity Code Coverage Package.
 
-\item Continuous Integration(CI): GitHub Actions to run automated tests upon 
+\item Continuous Integration (CI) : GitHub Actions to run automated tests upon 
 pull request to main branch.
 \end{itemize}
 
@@ -250,12 +250,12 @@ outside the responsibility and scope of the current project.
 \section{System Tests} \label{sec_systest}
 
 This section presents the detailed test cases for both the functional 
-requirements(\ref{test_func}) and the nonfunctional requirements(\ref{test_nonfunc}).
+requirements (\ref{test_func}) and the nonfunctional requirements (\ref{test_nonfunc}).
 
 \subsection{Tests for Functional Requirements} \label{test_func}
 
 These test cases are designed to verify the functional requirements specified 
-in the \citet{SRS}(Section 5.1). The traceability between the requirements and 
+in the \citet{SRS} (Section 5.1). The traceability between the requirements and 
 the corresponding test cases is illustrated in Table~\ref{tblTrace}.
 
 \subsubsection{Input Test} \label{inputTest}
@@ -373,13 +373,13 @@ $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ \\
 \hline
 & $\mathbf{p}_k\text{(m,m)}$ & $\mathbf{r}_k\text{(m)}$ & Valid? & Error Message \\
 \hline
-OTF\refstepcounter{oitnum}\theoitnum & (100,100) & 50 & Y & No error message.\\
+OTF\refstepcounter{oitnum}\theoitnum & (100, 100) & 50 & Y & No error message.\\
 \hline
 OTF\refstepcounter{oitnum}\theoitnum & - & - & Y & No error message.\\
 \hline
-OTF\refstepcounter{oitnum}\theoitnum & (-900,100) & 50 & N & For $\mathbf{p}_k\text{(x,y)}$, x and y must be in [-500,1000].\\
+OTF\refstepcounter{oitnum}\theoitnum & (-900, 100) & 50 & N & For $\mathbf{p}_k\text{(x,y)}$, x and y must be in [-500,1000].\\
 \hline
-OTF\refstepcounter{oitnum}\theoitnum & (100,100) & -50 & N & $\mathbf{r}_k$ must be in [1, 500].\\
+OTF\refstepcounter{oitnum}\theoitnum & (100, 100) & -50 & N & $\mathbf{r}_k$ must be in [1, 500].\\
 \hline
 OTF\refstepcounter{oitnum}\theoitnum & - & 50 & N & Data missing for $\mathbf{p}_k$.\\
 \hline
@@ -400,7 +400,7 @@ Input: The Input column in Table~\ref{TblITMethods}
 Output: The Output column in Table~\ref{TblITMethods}
 
 Test Case Derivation: The software currently supports only the Explicit 
-Euler(EEuler), Runge-Kutta 4(RK4), and Semi-Implicit Euler(SIEuler) methods.
+Euler (EEuler), Runge-Kutta 4 (RK4), and Semi-Implicit Euler (SIEuler) methods.
 					
 How test will be performed: The developer will create the test cases and run 
 them automatically using the Unity Test Framework.
@@ -434,6 +434,37 @@ of the agents rather than exact numerical values.
 \paragraph{Test of Motion Logic}
 
 \begin{enumerate}
+
+\item{single-agent-motion\\} \label{singleAgentTest}
+
+Control: Automatic and Manual
+					
+Initial State: There is one one agent, with initial positions at (0, 0).
+					
+Input: The Input column in Table~\ref{TblMotionTest0}
+					
+Output: The agent positions file, animation.
+
+Test Case Derivation: For flocking with only one agent, according to DD4, 
+DD5, DD6, DD7, and DD8 in the \citet{SRS}, the agent is driven solely by the 
+goal seeking force. In this case, the agent's motion behavior becomes predictable.
+
+How test will be performed: 
+\begin{itemize}
+\item The agent is always influenced only by the force defined as DD8 in the \citet{SRS}.
+\item In the animation, it can be clearly observed that the agent move 
+directly to the goal point.
+\end{itemize}
+
+\begin{longtable}{c c c c c c c c c c}
+\caption{Input of single-agent-motion} \label{TblMotionTest0} \\
+\hline
+$N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
+\hline
+1 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & - & - & SIEuler \\
+\hline
+\end{longtable}
+
 \item{two-agent-symmetric-motion\\} \label{symmetricTest}
 
 Control: Automatic and Manual
@@ -443,7 +474,7 @@ and (1, 0.5), respectively.
 					
 Input: The Input column in Table~\ref{TblMotionTest1}
 					
-Output: Animation, the flocking center $\mathbf{p}_t$ , the flock 
+Output: The agent positions file, animation, the flocking center $\mathbf{p}_t$ , the flock 
 cohesion $\mathbf{C}_\mathbf{t}$.
 
 Test Case Derivation: For flocking with only two agents, according to DD4, 
@@ -470,7 +501,7 @@ runs, the larger the deviation may become.
 \hline
 $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
 \hline
-2 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & SIEuler \\
+2 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200, 200) & 50 & SIEuler \\
 \hline
 \end{longtable}
 
@@ -483,7 +514,7 @@ and (1, 0.5), respectively.
 					
 Input: The Input column in Table~\ref{TblMotionTest2}
 					
-Output: Animation, the flocking center $\mathbf{p}_t$ , the flock 
+Output: The agent positions file, animation, the flocking center $\mathbf{p}_t$ , the flock 
 cohesion $\mathbf{C}_\mathbf{t}$.
 
 Test Case Derivation: Similar to \ref{symmetricTest}, this test also ensures 
@@ -510,7 +541,7 @@ floating-point computations.
 \hline
 $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
 \hline
-2 & 0.01 & 0.5 & 0.5 & 0 & 0.5 & 0.5 & (200,200) & 50 & SIEuler \\
+2 & 0.01 & 0.5 & 0.5 & 0 & 0.5 & 0.5 & (200, 200) & 50 & SIEuler \\
 \hline
 \end{longtable}
 
@@ -534,18 +565,16 @@ Initial State: None.
 					
 Input: The Input column in Table~\ref{TblBoundTest1}
 					
-Output: Agent speed $\mathbf{v}_{i,t}$, line chart of mean 
-speed $\bar{v}_\mathbf{t}$, alignment metric $\mathbf{A}_\mathbf{t}$, flock 
-cohesion $\mathbf{C}_\mathbf{t}$.
+Output: The agent positions file, agent speed $\mathbf{v}_{i,t}$.
 
 Test Case Derivation: To prevent the flocking behavior from diverging, a 
 maximum velocity constraint must be enforced for each agent.
 
 How test will be performed: 
 \begin{itemize}
-\item $|\mathbf{v}_{i,t}| < \mathbf{v}_{max}$
+\item $\forall t \ge 0,\; \forall i \in \{1,\dots,N\},\; \|\mathbf{v}_{i,t}\| \le v_{max}$
 \end{itemize}
-$\mathbf{v}_{max}$ is a boundary introduced to maintain the stability of the 
+$v_{max}$ is a boundary introduced to maintain the stability of the 
 flocking behavior. Its exact value has not yet been determined; it may later 
 be computed based on the dynamical model in \citet{OlfatiFlocking2006}, or 
 set as a fixed value as done in \citet{AndrewFlocking2011}.
@@ -555,9 +584,9 @@ set as a fixed value as done in \citet{AndrewFlocking2011}.
 \hline
 $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
 \hline
-100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & EEuler \\
-100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & RK4 \\
-100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & SIEuler \\
+100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200, 200) & 50 & EEuler \\
+100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200, 200) & 50 & RK4 \\
+100 & 0.01 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200, 200) & 50 & SIEuler \\
 \hline
 \end{longtable}
 \end{enumerate}
@@ -579,8 +608,7 @@ Initial State: None.
 					
 Input: The Input column in Table~\ref{TblMethodTest1}
 					
-Output: Line chart of mean speed $\bar{v}_\mathbf{t}$, alignment 
-metric $\mathbf{A}_\mathbf{t}$, flock cohesion $\mathbf{C}_\mathbf{t}$.
+Output: The agent positions file.
 
 Test Case Derivation: Since numerical integration methods discretize 
 continuous dynamics for computation, theoretically, the smaller the time step, 
@@ -589,15 +617,9 @@ integration methods.
 
 How test will be performed: 
 \begin{itemize}
-\item Throughout the entire simulation, the average difference 
-in $\bar{v}_\mathbf{t}$ among the different numerical integration methods is 
-larger than the corresponding value in \ref{maxVTest}.
-\item Throughout the entire simulation, the average difference 
-in $\mathbf{A}_\mathbf{t}$ among the different numerical integration methods is 
-larger than the corresponding value in \ref{maxVTest}.
-\item Throughout the entire simulation, the average difference 
-in $\mathbf{C}_\mathbf{t}$ among the different numerical integration methods is 
-larger than the corresponding value in \ref{maxVTest}.
+\item Throughout the entire simulation, the difference in agent position among 
+the different numerical integration methods is larger than the corresponding 
+value in \ref{maxVTest}.
 \end{itemize}
 
 \begin{longtable}{c c c c c c c c c c}
@@ -605,9 +627,9 @@ larger than the corresponding value in \ref{maxVTest}.
 \hline
 $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{p}_1\text{(m,m)}$ & $\mathbf{r}_1\text{(m)}$ & $\mathbf{M}$ \\
 \hline
-100 & 0.1 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & EEuler \\
-100 & 0.1 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & RK4 \\
-100 & 0.1 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200,200) & 50 & SIEuler \\
+100 & 0.1 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200, 200) & 50 & EEuler \\
+100 & 0.1 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200, 200) & 50 & RK4 \\
+100 & 0.1 & 0.5 & 0.5 & 0.5 & 0.5 & 0.5 & (200, 200) & 50 & SIEuler \\
 \hline
 \end{longtable}
 \end{enumerate}
@@ -630,7 +652,8 @@ below.
 
 \item{test-realism\\}
 
-Type: Manual with potential users.
+Type: Manual with potential users, consisting of 3-5 volunteers from the CAS 
+741 class.
 					
 Initial State: The software is set up and ready for testing, and a set of 
 relatively appropriate input parameters has already been identified.
@@ -700,7 +723,7 @@ Input/Condition: Adding support for a new feature, such as supporting a new
 numerical integration method, Runge-Kutta 3.
 					
 Output/Result: Implementing the corresponding feature and record the time 
-required as$\mathbf{T}_{add}$. 
+required as $\mathbf{T}_{add}$. 
 					
 How test will be performed: Compare the original development time 
 $\mathbf{T}_{dev}$ with the time required to implement the new feature 
