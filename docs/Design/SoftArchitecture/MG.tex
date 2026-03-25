@@ -46,8 +46,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2026/03/25 & 1.0 & Initial MG\\
 \bottomrule
 \end{tabularx}
 
@@ -74,7 +73,6 @@ This section records information for easy reference.
   SRS & Software Requirements Specification\\
   \progname & Explanation of program name\\
   UC & Unlikely Change \\
-  \wss{etc.} & \wss{...}\\
   \bottomrule
 \end{tabular}\\
 
@@ -157,16 +155,17 @@ adapted here is called design for
 change.
 
 \begin{description}
-\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
-  hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
-  initial input data.
-\item ...
+\item[\refstepcounter{acnum} \actheacnum \label{ac3DEnv}:] The simulation 
+environment may be extended from two-dimensional to three-dimensional space. [SRS: LC1]
+\item[\refstepcounter{acnum} \actheacnum \label{acObsRadius}:] The influence 
+radius of obstacles may change. [SRS: LC3]
+\item[\refstepcounter{acnum} \actheacnum \label{acGoal}:] The positions 
+of goal locations may change or be configurable. [SRS: LC4]
+\item[\refstepcounter{acnum} \actheacnum \label{acStart}:] The initial 
+generation region of agents may change. [SRS: LC5]
+\item[\refstepcounter{acnum} \actheacnum \label{acODEMethod}:] Additional 
+numerical integration methods may be introduced. [SRS: R3]
 \end{description}
-
-\wss{Anticipated changes relate to changes that would be made in requirements,
-design or implementation choices.  They are not related to changes that are made
-at run-time, like the values of parameters.}
 
 \subsection{Unlikely Changes} \label{SecUchange}
 
@@ -178,9 +177,8 @@ will potentially need to be modified. Hence, it is not intended that these
 decisions will be changed.
 
 \begin{description}
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucIO}:] Input/Output devices
-  (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-\item ...
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucObsShape}:] Obstacles may not be 
+limited to circular shapes. [SRS: LR2]
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
@@ -192,7 +190,20 @@ actually be implemented.
 
 \begin{description}
 \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item ...
+\item [\refstepcounter{mnum} \mthemnum \label{mCC}:] Main Controller Module
+\item [\refstepcounter{mnum} \mthemnum \label{mIV}:] Input Validation Module
+\item [\refstepcounter{mnum} \mthemnum \label{mForce}:] Force Module
+\item [\refstepcounter{mnum} \mthemnum \label{mODE}:] ODE Solver Module
+\item [\refstepcounter{mnum} \mthemnum \label{mFM}:] Flocking Metrics Module
+\item [\refstepcounter{mnum} \mthemnum \label{mDyna}:] Dynamics Module
+\item [\refstepcounter{mnum} \mthemnum \label{mObs}:] Obstacle Module
+\item [\refstepcounter{mnum} \mthemnum \label{mFP}:] Flocking Parameter Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAS}:] Animation Status Module
+\item [\refstepcounter{mnum} \mthemnum \label{mFS}:] Flocking Status Module
+\item [\refstepcounter{mnum} \mthemnum \label{mInput}:] Input Reader Module
+\item [\refstepcounter{mnum} \mthemnum \label{mFile}:] File I/O Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAnima}:] Animation Simulator Module
+\item [\refstepcounter{mnum} \mthemnum \label{mChart}:] Chart Drawer Module
 \end{description}
 
 
@@ -206,19 +217,24 @@ actually be implemented.
 {Hardware-Hiding Module} & ~ \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\ 
-& ?\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module}
+& Main Controller Module \\
+& Input Validation Module\\
+& Force Module \\
+& ODE Solver Module\\
+& Flocking Metrics Module\\
+& Dynamic Module \\
+& Obstacles Module \\
+& Flocking Parameter Module \\
+& Animation Status Module \\
+& Flocking Status Module \\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision Module} & {?}\\
-& ?\\
-& ?\\
+\multirow{3}{0.3\textwidth}{Software Decision Module}
+& Input Reader Module\\
+& File I/O Module\\
+& Animation Simulator Module\\
+& Chart Drawer Module\\
 \bottomrule
 
 \end{tabular}
@@ -226,18 +242,14 @@ actually be implemented.
 \label{TblMH}
 \end{table}
 
+Note that \mref{mHH} is a commonly used module and is already implemented by 
+the operating system. It will not be reimplemented.
+
 \section{Connection Between Requirements and Design} \label{SecConnection}
 
 The design of the system is intended to satisfy the requirements developed in
 the SRS. In this stage, the system is decomposed into modules. The connection
 between requirements and modules is listed in Table~\ref{TblRT}.
-
-\wss{The intention of this section is to document decisions that are made
-  ``between'' the requirements and the design.  To satisfy some requirements,
-  design decisions need to be made.  Rather than make these decisions implicit,
-  they are explicitly recorded here.  For instance, if a program has security
-  requirements, a specific design decision may be made to satisfy those
-  requirements with a password.}
 
 \section{Module Decomposition} \label{SecMD}
 
@@ -278,19 +290,119 @@ to be implemented.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Input Format Module (\mref{mInput})}
+\subsubsection{Main Controller Module (\mref{mCC})}
 
 \begin{description}
-\item[Secrets:]The format and structure of the input data.
-\item[Services:]Converts the input data into the data structure used by the
-  input parameters module.
-\item[Implemented By:] [Your Program Name Here]
-\item[Type of Module:] [Record, Library, Abstract Object, or Abstract Data Type]
-  [Information to include for leaf modules in the decomposition by secrets tree.]
+\item[Secrets:] The algorithms used to coordinate the execution and control 
+flow of the program.
+\item[Services:] Manages the overall running of the system.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Abstract Object
 \end{description}
 
-\subsubsection{Etc.}
+\subsubsection{Input Validation Module (\mref{mIV})}
 
+\begin{description}
+\item[Secrets:] The algorithms used to verify the validity of input parameters.
+\item[Services:] Store the parameter ranges and constraints, provide methods 
+to check whether parameters are valid, and return appropriate error messages 
+for invalid input.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Force Module (\mref{mForce})}
+
+\begin{description}
+\item[Secrets:] The algorithms used to compute the forces acting on a single 
+agent at a given time.
+\item[Services:] Based on the current positions and velocities of agents in 
+the flocking system, the positions of obstacles and the goal point, compute 
+the cohesion force, alignment force, separation force, obstacle avoidance 
+force, and goal-seeking force acting on the specified agent at the current time.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Library
+\end{description}
+
+\subsubsection{ODEs Solver Module (\mref{mODE})}
+
+\begin{description}
+\item[Secrets:] The algorithms used to compute the change in all agents' state 
+after a given time interval.
+\item[Services:] Based on the current velocity and position of all agents and 
+the time step, compute the agents' velocity and position after the time interval. 
+Support multiple numerical integration methods.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Flocking Metrics Module (\mref{mFM})}
+
+\begin{description}
+\item[Secrets:] The algorithms used to compute global statistical metrics of 
+the flocking system.
+\item[Services:] Based on the current positions and velocities of agents in 
+the flocking system, compute global metrics including the average velocity of 
+the flock, the alignment metric, and the cohesion metric.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Dynamics Module (\mref{mDyna})}
+
+\begin{description}
+\item[Secrets:] The algorithms used to compute the dynamic states of all 
+agents in the flocking system.
+\item[Services:] Based on the initial positions of agents in the flocking 
+system, compute the agents' state updates and the flocking state parameters 
+at each time step. Continue the simulation until the flock reaches the goal 
+point or a timeout occurs.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Abstract Object
+\end{description}
+
+\subsubsection{Obstacles Module (\mref{mObs})}
+
+\begin{description}
+\item[Secrets:] The data structures used to store the parameters of 
+the obstacle.
+\item[Services:] Store the parameters of obstacle, including the center and radius.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Record
+\end{description}
+
+\subsubsection{Flocking Parameter Module (\mref{mFP})}
+
+\begin{description}
+\item[Secrets:] The data structures used to store the initialization data of 
+the flocking.
+\item[Services:] Store the flocking initialization data, including the weights 
+of each force, the total number of agents, obstacle information, the simulation 
+time step, and the initial positions of all agents.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Record
+\end{description}
+
+\subsubsection{Animation Status Module (\mref{mAS})}
+
+\begin{description}
+\item[Secrets:] The data structures used to store animation-related data.
+\item[Services:] Store animation data including the simulation time step and 
+the positions of all agents at each time step.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Record
+\end{description}
+
+\subsubsection{Flocking Status Module (\mref{mFS})}
+
+\begin{description}
+\item[Secrets:] The data structures used to store flocking-related parameters.
+\item[Services:] Store flocking parameters including the simulation time step, 
+and the average velocity of the flock, the alignment metric, and the cohesion 
+metric at each time step.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Record
+\end{description}
 
 \subsection{Software Decision Module}
 
@@ -305,7 +417,45 @@ to be implemented.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Etc.}
+\subsubsection{Input Reader Module (\mref{mInput})}
+
+\begin{description}
+\item[Secrets:] The algorithm to read user inputs from the UI. 
+\item[Services:] Retrieve user inputs from the UI, verify those values and 
+assign them to the corresponding variables.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Abstract Object
+\end{description}
+
+\subsubsection{File I/O Module (\mref{mFile})}
+
+\begin{description}
+\item[Secrets:] The methods used to read data from files and write data to files.
+\item[Services:] Read data from files in string format and convert it to the 
+corresponding data types, or save data as JSON-formatted strings to files.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Animation Simulator Module (\mref{mAnima})}
+
+\begin{description}
+\item[Secrets:] The methods used to generate the animation.
+\item[Services:] Convert the positions of all agents at each time step into 
+an animated visualization.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Abstract Object
+\end{description}
+
+\subsubsection{Chart Drawer Module (\mref{mChart})}
+
+\begin{description}
+\item[Secrets:] The methods used to generate the line charts.
+\item[Services:] Convert the matrics of flocking at each time step into 
+line charts.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Abstract Object
+\end{description}
 
 \section{Traceability Matrix} \label{SecTM}
 
@@ -320,17 +470,13 @@ requirements and between the modules and the anticipated changes.
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-R2 & \mref{mInput}, \mref{mParams}\\
-R3 & \mref{mVerify}\\
-R4 & \mref{mOutput}, \mref{mControl}\\
-R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R9 & \mref{mVerifyOut}\\
-R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
+R1 & \mref{mInput}, \mref{mObs}, \mref{mFP}\\
+R2 & \mref{mIV} \\
+R3 & \mref{mODE}, \mref{mDyna}\\
+R4 & \mref{mDyna}, \mref{mForce}, \mref{mAS}, \mref{mFile}\\
+R5 & \mref{mDyna}, \mref{mFM}, \mref{mFS}, \mref{mFile}\\
+R6 & \mref{mAnima}, \mref{mFile}\\
+R7 & \mref{mChart}, \mref{mFile}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
@@ -343,18 +489,11 @@ R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
 \toprule
 \textbf{AC} & \textbf{Modules}\\
 \midrule
-\acref{acHardware} & \mref{mHH}\\
-\acref{acInput} & \mref{mInput}\\
-\acref{acParams} & \mref{mParams}\\
-\acref{acVerify} & \mref{mVerify}\\
-\acref{acOutput} & \mref{mOutput}\\
-\acref{acVerifyOut} & \mref{mVerifyOut}\\
-\acref{acODEs} & \mref{mODEs}\\
-\acref{acEnergy} & \mref{mEnergy}\\
-\acref{acControl} & \mref{mControl}\\
-\acref{acSeqDS} & \mref{mSeqDS}\\
-\acref{acSolver} & \mref{mSolver}\\
-\acref{acPlot} & \mref{mPlot}\\
+\acref{ac3DEnv}     & \mref{mCC}, \mref{mAnima}\\
+\acref{acObsRadius} & \mref{mForce}\\
+\acref{acGoal}      & \mref{mDyna}\\
+\acref{acStart}     & \mref{mCC}\\
+\acref{acODEMethod} & \mref{mODE}, \mref{mDyna}, \mref{mIV}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}
@@ -374,18 +513,9 @@ the modules. It can be seen that the graph is a directed acyclic graph
 system, and modules in the higher level of the hierarchy are essentially simpler
 because they use modules from the lower levels.
 
-\wss{The uses relation is not a data flow diagram.  In the code there will often
-be an import statement in module A when it directly uses module B.  Module B
-provides the services that module A needs.  The code for module A needs to be
-able to see these services (hence the import statement).  Since the uses
-relation is transitive, there is a use relation without an import, but the
-arrows in the diagram typically correspond to the presence of import statement.}
-
-\wss{If module A uses module B, the arrow is directed from A to B.}
-
 \begin{figure}[H]
 \centering
-%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
+\includegraphics[width=0.9\textwidth]{Use Hierarchy.png}
 \caption{Use hierarchy among modules}
 \label{FigUH}
 \end{figure}
@@ -394,26 +524,57 @@ arrows in the diagram typically correspond to the presence of import statement.}
 
 \section{User Interfaces}
 
-\wss{Design of user interface for software and hardware.  Attach an appendix if
-needed. Drawings, Sketches, Figma}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{InitUI.png}
+\caption{GUI for initializing flocking parameters}
+\label{FigInitUI}
+\end{figure}
 
-\section{Design of Communication Protocols}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{SimuUI.png}
+\caption{GUI for computing simulation results}
+\label{FigSimuUI}
+\end{figure}
 
-\wss{If there is communication between hardware and software, it may be necessary 
-to explain the design of the communication protocol.  This section should be filled 
-in with NA if it is not appropriate for a given project.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{AnimeUI.png}
+\caption{GUI for generating simulation animations}
+\label{FigAnimeUI}
+\end{figure}
 
-\section{Database Design}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{ChartUI1.png}
+\caption{GUI for generating parameter line charts}
+\label{FigChartUI1}
+\end{figure}
 
-\wss{If a database is a significant component of the project, the database
-design should be summarized here.  This section should be filled in with NA if
-it is not appropriate for a given project.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{ChartUI2.png}
+\caption{GUI for displaying parameter line charts}
+\label{FigChartUI2}
+\end{figure}
+% \section{Design of Communication Protocols}
 
-\section{Timeline}
+% \wss{If there is communication between hardware and software, it may be necessary 
+% to explain the design of the communication protocol.  This section should be filled 
+% in with NA if it is not appropriate for a given project.}
 
-\wss{Schedule of tasks and who is responsible}
+% \section{Database Design}
 
-\wss{You can point to GitHub if this information is included there}
+% \wss{If a database is a significant component of the project, the database
+% design should be summarized here.  This section should be filled in with NA if
+% it is not appropriate for a given project.}
+
+% \section{Timeline}
+
+% \wss{Schedule of tasks and who is responsible}
+
+% \wss{You can point to GitHub if this information is included there}
 
 \bibliographystyle {plainnat}
 \bibliography{../../../refs/References}

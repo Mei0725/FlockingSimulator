@@ -53,8 +53,7 @@ urlcolor=cyan          % color of external links
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2026/03/25 & 1.0 & Initial MIS\\
 \bottomrule
 \end{tabularx}
 
@@ -62,9 +61,7 @@ Date 2 & 1.1 & Notes\\
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \wss{give url}
-
-\wss{Also add any additional symbols, abbreviations or acronyms}
+See SRS Documentation at \href{https://mei0725.github.io/FlockingSimulator/SRS/SRS.pdf}{SRS.pdf}
 
 \newpage
 
@@ -77,16 +74,14 @@ See SRS Documentation at \wss{give url}
 \section{Introduction}
 
 The following document details the Module Interface Specifications for
-\wss{Fill in your project name and description}
+\progname \, which simulates flocking behaviors by different ODE methods, 
+visualizes animation of result, and analyzes parameter effects through charts.
 
 Complementary documents include the System Requirement Specifications
-and Module Guide.  The full documentation and implementation can be
-found at \url{...}.  \wss{provide the url for your repo}
+and Module Guide. The full documentation and implementation can be
+found at \href{https://mei0725.github.io/FlockingSimulator/}{here}
 
 \section{Notation}
-
-\wss{You should describe your notation.  You can use what is below as
-  a starting point.}
 
 The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
 with the addition that template modules have been adapted from
@@ -134,20 +129,25 @@ The following table is taken directly from the Module Guide document for this pr
 {Hardware-Hiding} & ~ \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module}
+& Main Controller Module \\
+& Input Validation Module\\
+& Force Module \\
+& ODE Solver Module\\
+& Flocking Metrics Module\\
+& Dynamic Module \\
+& Obstacles Module \\
+& Flocking Parameter Module \\
+& Animation Status Module \\
+& Flocking Status Module \\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
+\multirow{3}{0.3\textwidth}{Software Decision Module}
+& Input Reader Module\\
+& File I/O Module\\
+& Animation Simulator Module\\
+& Chart Drawer Module\\
 \bottomrule
-
 \end{tabular}
 \caption{Module Hierarchy}
 \label{TblMH}
@@ -156,32 +156,35 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 ~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
-
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+\section{MIS of Main Controller Module} \label{mMC}
 
 \subsection{Module}
 
-\wss{Short name for the module}
+MainController
 
 \subsection{Uses}
 
+FilesIO, InputReader, Dynamic, AnimationSimulator, ChartDrawer
 
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
 
+\begin{itemize}
+\item $startRadius$ := 5.
+\end{itemize}
+
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\wss{accessProg} & - & - & - \\
+\texttt{InitClicked} & - & - & - \\
+\texttt{CalculateClicked} & - & - & - \\
+\texttt{PlayAnimaClicked} & - & - & - \\
+\texttt{DrawClicked} & - & - & - \\
 \hline
 \end{tabular}
 \end{center}
@@ -190,89 +193,975 @@ The following table is taken directly from the Module Guide document for this pr
 
 \subsubsection{State Variables}
 
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
-
-\subsubsection{Environment Variables}
-
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
-
-\subsubsection{Assumptions}
-
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+None.
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent InitClicked():
 \begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
+\item transition: Read the input parameters from Input Reader Module, add the 
+initial positions of the flocking simulation, and save it using File I/O Module 
+by following steps. 
+\end{itemize}
+\textit{\# Get user input and set it in the FlockingParameter object}
+
+parameters :=  GetUserInput()
+
+\textit{\# Initialize agents' starting positions}
+
+FlockingInit(parameters)
+
+\textit{\# Save the parameters to a JSON file}
+
+path := Save(parameters)
+
+\vspace{2em}
+
+\noindent CalculateClicked():
+
+\begin{itemize}
+\item transition: Read the input parameters from the path users input from 
+Input Reader Module, calculate the process of simulation using Dynamics Module, 
+and save the results using File I/O Module by following steps. 
+\end{itemize}
+\textit{\# Get the flocking parameters from the user input path}
+
+parameters :=  GetSimulateParam()
+
+method := GetMethod()
+
+\textit{\# Calculate the metrics of flocking in the simulation}
+
+[animationStatus, flockMetrics] := FlockSimulation(parameters, method)
+
+\textit{\# Save the parameters to a JSON file}
+
+animaPath := Save(animationStatus)
+
+flockPath := Save(flockMetrics)
+
+\vspace{2em}
+
+\noindent PlayAnimaClicked():
+
+\begin{itemize}
+\item transition: Read the animation information from the path users input from 
+Input Reader Module, generate the animation and display it using Animation 
+Simulator Module by following steps. 
+\end{itemize}
+\textit{\# Get the flocking parameters from the user input path}
+
+anima :=  GetAnimaStatus()
+
+\textit{\# Generate the animation and display}
+
+PlaySimulation(anima)
+
+\vspace{2em}
+
+\noindent DrawClicked():
+
+\begin{itemize}
+\item transition: Read the animation information from the paht users input from 
+Input Reader Module, draw the line charts and display it by following steps. 
+\end{itemize}
+\textit{\# Get the flocking parameters from the user input path}
+
+flock :=  GetFlockStatus()
+
+\textit{\# Draw the line charts and display}
+
+DrawChart(flock)
+
+\subsubsection{Local Functions}
+\noindent FlockingInit():
+\begin{itemize}
+\item input: \texttt{parameters}: FlockingParameter
+\item output: None
+\item description: Generate the initial positions for a specified number of 
+agents and assign them to \texttt{parameter.starts}.
 \end{itemize}
 
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
+~\newpage
 
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
+\section{MIS of Input Validation Module} \label{mIV}
+
+\subsection{Module}
+
+InputValidation
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+\item $k_{min}$ := 0.
+\item $k_{max}$ := 2.0.
+\item $N_{min}$ := 1.
+\item $N_{max}$ := 5000.
+\item $t_{min}$ := 0.005.
+\item $t_{max}$ := 0.1.
+\item $p_{min}$ := -500.
+\item $p_{max}$ := 1000.
+\item $r_{min}$ := 1.
+\item $r_{max}$ := 500.
+\item $EEULER$ := EEuler.
+\item $RK4$ := RK4.
+\item $ISEULER$ := ISEuler.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+\texttt{KVerify} & \texttt{input}: str, \texttt{type}: type & - & MissingK, ErrorK \\
+\texttt{TVerify} & \texttt{input}: str & - & MissingT, ErrorT \\
+\texttt{NVerify} & \texttt{input}: str & - & MissingN, ErrorN \\
+\texttt{ObsVerify} & \texttt{input}: str & - & MissingP, MissingR, ErrorP, ErrorR \\
+\texttt{MethodVerify} & \texttt{method}: str & - & MissingMethod, ErrorMethod \\
+\texttt{PathVerify} & \texttt{path}: str & - & MissingPath \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent KVerify(input, type):
+\begin{itemize}
+\item output: out := None. 
+\item exception: exc :=
+\begin{itemize}
+  \item MissingK, if $input$ is null.
+  \item ErrorK, if $input$ is not number or $input < k_{min}$ or $input > k_{max}$.
+\end{itemize}
+\end{itemize}
+
+\noindent TVerify(input):
+\begin{itemize}
+\item output: out := None. 
+\item exception: exc :=
+\begin{itemize}
+  \item MissingT, if $input$ is null.
+  \item ErrorT, if $input$ is not number or $input < t_{min}$ or $input > t_{max}$.
+\end{itemize}
+\end{itemize}
+
+\noindent NVerify(input):
+\begin{itemize}
+\item output: out := None. 
+\item exception: exc :=
+\begin{itemize}
+  \item MissingN, if $input$ is null.
+  \item ErrorN, if $input$ is not number or $input < N_{min}$ or $input > N_{max}$.
+\end{itemize}
+\end{itemize}
+
+\noindent ObsVerify(input):
+\begin{itemize}
+\item output: out := None. 
+\item exception: exc :=
+\begin{itemize}
+  \item MissingP, if for any item $i$ in $input$, $input[i].p$ is null.
+  \item MissingR, if for any item $i$ in $input$, $input[i].r$ is null.
+  \item ErrorP, if for any item $i$ in $input$, $input[i].p.x < p_{min}$ 
+  or $input[i].p.x > p_{max}$ or $input[i].p.y < p_{min}$ 
+  or $input[i].p.y > p_{max}$.
+  \item ErrorR, if for any item $i$ in $input$, $input[i].r < r_{min}$ 
+  or $input[i].r > r_{max}$.
+\end{itemize}
+\end{itemize}
+
+\noindent MethodVerify(method):
+\begin{itemize}
+\item output: out := None. 
+\item exception: exc :=
+\begin{itemize}
+  \item MissingMethod, if $method$ is null.
+  \item ErrorMethod, if $method$ is not included in {$EEULER$, $RK4$, $ISEULER$}
+\end{itemize}
+\end{itemize}
+
+\noindent PathVerify(path):
+\begin{itemize}
+\item output: out := None. 
+\item exception: exc :=
+\begin{itemize}
+  \item MissingPath, if $path$ is null.
+\end{itemize}
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Force Module} \label{mForce}
+
+\subsection{Module}
+
+Force
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+\item $v_{max}$ := 14.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+\texttt{CalForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[], 
+\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter, 
+\texttt{goal}: $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
+\texttt{CalAlignForce} & \texttt{i}: $\mathbb{R}$, \texttt{vs}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
+\texttt{CalCoheForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
+\texttt{CalSepaForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
+\texttt{CalObsAForce} & \texttt{p}: $\mathbb{R}^3$, \texttt{obs}: Obstacle[] & $\mathbb{R}^3$ & - \\
+\texttt{CalGoalForce} & \texttt{p}: $\mathbb{R}^3$, \texttt{v}: $\mathbb{R}^3$, \texttt{goal}: $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent CalForce(i, ps, vs, info, goal):
+\begin{itemize}
+\item output: out := $info.ka \cdot \mathbf{F}_{align} + info.kc \cdot \mathbf{F}_{cohe} + 
+info.ks \cdot \mathbf{F}_{sep} + info.ko \cdot \mathbf{F}_{obs} + 
+info.kg \cdot \mathbf{F}_{goal} $. 
+\end{itemize}
+
+\noindent CalAlignForce(i, vs):
+\begin{itemize}
+\item output: out := $\mathbf{F}_{align}=\frac{1}{|N_i|}\sum_{j\in N_i}\mathbf{vs}_j-\mathbf{vs}_i$. 
+\end{itemize}
+
+\noindent CalCoheForce(i, ps):
+\begin{itemize}
+\item output: out := $\mathbf{F}_{cohe}=\frac{1}{|N_i|}\sum_{j\in N_i}\mathbf{ps}_j-\mathbf{ps}_i$. 
+\end{itemize}
+
+\noindent CalSepaForce(i, ps):
+\begin{itemize}
+\item output: out := $\mathbf{F}_{sep}=\sum_{j\in N_i}\frac{\mathbf{ps}_i-\mathbf{ps}_j}{\|\mathbf{ps}_i-\mathbf{ps}_j\|^2}$. 
+\end{itemize}
+
+\noindent CalObsAForce(p, obs):
+\begin{itemize}
+\item output: out := $\mathbf{F}_{obs}=\sum_{k\in obs}\frac{\mathbf{p}_i-\mathbf{obs}_k}{\|\mathbf{p}_i-\mathbf{obs}_k\|^2}$. 
+\end{itemize}
+
+\noindent CalGoalForce(p, v, goal):
+\begin{itemize}
+\item output: out := $\mathbf{F}_{goal}=v_{max}\frac{\mathbf{g}-\mathbf{p}_i}{\|\mathbf{g}-\mathbf{p}_i\|}-\mathbf{v}_i$. 
+\end{itemize}
+
+~\newpage
+
+\section{MIS of ODE Solver Module} \label{mODE}
+
+\subsection{Module}
+
+ODESolver
+
+\subsection{Uses}
+
+Force
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None.
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+\texttt{EEulerMethod} & \texttt{ps}: $\mathbb{R}^3$[], 
+\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter, 
+\texttt{goal}: $\mathbb{R}^3$ & $\mathbb{R}^3$[][] & - \\
+\texttt{RK4Method} & \texttt{ps}: $\mathbb{R}^3$[], 
+\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter, 
+\texttt{goal}: $\mathbb{R}^3$ & $\mathbb{R}^3$[][] & - \\
+\texttt{SIEulerMethod} & \texttt{ps}: $\mathbb{R}^3$[], 
+\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter, 
+\texttt{goal}: $\mathbb{R}^3$& $\mathbb{R}^3$[][] & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent EEulerMethod(i, ps, vs, info, goal):
+\begin{itemize}
+\item output: \\
+a := CalForce(ps, vs, info, goal)
+out := $\begin{bmatrix} v_{next} \\ p_{next} \end{bmatrix} = \begin{bmatrix} vs[i] + a \cdot t \\ ps[i] + vs[i] \cdot t \end{bmatrix}$. 
+\end{itemize}
+
+\noindent RK4Method(ps, vs, info, goal):
+\textit{\# solving a = CalForce(i, ps, vs, info, goal) by Force Module}
+\begin{itemize}
+\item output: \\
+$k_1 := \begin{bmatrix} a_1 \\ v \end{bmatrix}$ \\
+$k_2 := k_1 + \begin{bmatrix} a_2 \\ v + \frac{t}{2}k_{1} \end{bmatrix}$ \\
+$k_3 := \begin{bmatrix} a_3 \\ v + \frac{t}{2}k_{2} \end{bmatrix}$ \\
+$k_4 = \begin{bmatrix} a_4 \\ v + t\,k_{3} \end{bmatrix}$ \\
+$\text{out} := \begin{bmatrix} v_{next} \\ p_{next} \end{bmatrix} = \begin{bmatrix} v \\ p \end{bmatrix} + \frac{t}{6}(k_1 + 2k_2 + 2k_3 + k_4)$
+\end{itemize}
+...
+
+\noindent SIEulerMethod(ps, vs, info, goal):
+\begin{itemize}
+\item output: \\
+a := CalForce(i, ps, vs, info, goal)
+out := $\begin{bmatrix} v_{next} \\ p_{next} \end{bmatrix} = \begin{bmatrix} vs[i] + a \cdot t \\ ps[i] + (vs[i] + a \cdot t) \cdot t \end{bmatrix}$
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Flocking Metrics Module} \label{mFM}
+
+\subsection{Module}
+
+FlockingMetrics
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+\texttt{CalMeanSpeed} & \texttt{vs}: $\mathbb{R}^3$[] & $\mathbb{R}$ & - \\
+\texttt{CalAlignMetrics} & \texttt{vs}: $\mathbb{R}^3$[] & $\mathbb{R}$ & - \\
+\texttt{CalCenter} & \texttt{ps}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
+\texttt{CalCohesion} & \texttt{ps}: $\mathbb{R}^3$[], \texttt{center}: $\mathbb{R}^3$ & $\mathbb{R}$ & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent CalMeanSpeed(vs):
+\begin{itemize}
+\item output: out := $\text{avg} = \frac{1}{|vs|} \sum_{i=1}^{|vs|} \left\lVert vs[i] \right\rVert$. 
+\end{itemize}
+
+\noindent CalAlignMetrics(vs):
+\begin{itemize}
+\item output: out := $\text{align} = \frac{1}{|vs|}\left\|\sum_{i=1}^{|vs|}\frac{vs[i]}{\|vs[i]\|}\right\|$. 
+\end{itemize}
+
+\noindent CalCenter(ps):
+\begin{itemize}
+\item output: out := $\text{center} = \frac{1}{|ps|} \sum_{i=1}^{|ps|} ps[i]$. 
+\end{itemize}
+
+\noindent CalCohesion(ps, center):
+\begin{itemize}
+\item output: out := $\text{cohe} =\frac{1}{|ps|} \sum_{i=1}^{|ps|} \left\| ps[i] - \text{center} \right\|$. 
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Dynamics Module} \label{mDyna}
+
+\subsection{Module}
+
+Dynamics
+
+\subsection{Uses}
+
+ODESolver, FlockingMetrics
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+\item $goal$ := (500, 500, 0).
+\item $arrive$ := 1.
+\item $maxTime$ := 1000.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+\texttt{FlockSimulation} & \texttt{initVal}: FlockingParameter, \texttt{method}: str & [AnimationStatus, FlockingStatus] & ErrorMethod \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item \texttt{anima}: AnimationStatus, store the position of all agents at every time step. 
+\item \texttt{flock}: FlockingStatus, store the flocking metrics at every time step. 
+\item \texttt{time}: $\mathbb{R}$, the running time of the flocking simulation. 
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent FlockSimulation():
+\begin{itemize}
+\item output: Compute the detail of animation and the metrics of flocking at 
+every time steps using ODE Solver Module and Flocking Metrics Module by 
+following steps. 
+\item exception: exc := ErrorMethod, if the ODE method is not defined.
+\end{itemize}
+\textit{\# Get the FlockingParameter object from MainController}
+
+\textit{\# Loop until it is timeout}
+
+while not timeout do
+
+\ \ \textit{\# Compute next velocity and position using the selected ODE method}
+
+\ \ [vs\_{next}, ps\_{next}] := ODEChoose()
+
+\ \ \textit{\# Compute next flocking metrics using the FlockingMetrics}
+
+\ \ speed := CalMeanSpeed()
+
+\ \ align := CalAlignMetrics()
+
+\ \ cohe := CalCohesion()
+
+\ \ center := CalCenter()
+
+\ \ \textit{\# Store the agent position in anima}
+
+\ \ anima.add(ps\_{next})
+
+\ \ \textit{\# Store the flocking metrics in flock}
+
+\ \ flock.add(speed, align, cohe)
+
+\ \ \textit{\# Check if the flocking reach the goal}
+
+\ \ if (distance between goal and center) $\leq$ arrive, then break
+
+\ \ \textit{\# Update the simulation time}
+
+end while
+
+\textit{\# Return [anima, flock]}
 
 \subsubsection{Local Functions}
 
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+\noindent ODEChoose():
+\begin{itemize}
+\item input: \texttt{method}: str, \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[], 
+\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter. 
+\item output: $\mathbb{R}^3$[].
+\item exception: exc := ErrorMethod, if the ODE method is not defined.
+\item description: Compute the velocity and position at next time step by 
+specific method in ODESolver Module.
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Obstacle Module} \label{mObs}
+
+\subsection{Module}
+
+Obstacle
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+None.
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item \texttt{p}: $\mathbb{R}^3$, the center of circle obstacle. 
+\item \texttt{r}: $\mathbb{R}$, the radius of circle obstacle. 
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Flocking Parameter Module} \label{mFP}
+
+\subsection{Module}
+
+FlockingParameter
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+None.
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item \texttt{ka}: $\mathbb{R}$, the weight of alignment force. 
+\item \texttt{kc}: $\mathbb{R}$, the weight of cohesion force. 
+\item \texttt{ks}: $\mathbb{R}$, the weight of separation force. 
+\item \texttt{ko}: $\mathbb{R}$, the weight of obstacle avoidance force. 
+\item \texttt{kg}: $\mathbb{R}$, the weight of goal-seeking force. 
+\item \texttt{n}: $\mathbb{Z}$, the number of agent. 
+\item \texttt{obs}: array of Obs, the information of obstacles;
+\item \texttt{t}: $\mathbb{R}$, the length of time step. 
+\item \texttt{starts}: array of $\mathbb{R}^3$, the start points of agents. 
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Animation Status Module} \label{mAS}
+
+\subsection{Module}
+
+AnimationStatus
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+None.
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item \texttt{t}: $\mathbb{R}$, the length of time step. 
+\item \texttt{agents}: ($\mathbb{R}^3$[])[], the position of agents. 
+\item \texttt{obs}: array of Obs, the information of obstacles;
+\end{itemize}
+
+
+~\newpage
+
+\section{MIS of Flocking Status Module} \label{mFS}
+
+\subsection{Module}
+
+FlockingStatus
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+None.
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item \texttt{t}: $\mathbb{R}$, the length of time step. 
+\item \texttt{meanSpeed}: $\mathbb{R}$[], the list of mean speed at every time step. 
+\item \texttt{alignMetric}: $\mathbb{R}$[], the list of align at every time step.
+\item \texttt{cohesion}: $\mathbb{R}$[], the list of cohesion at every time step.
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Input Reader Module} \label{mInput}
+
+\subsection{Module}
+
+InputReader
+
+\subsection{Uses}
+
+Hardware-Hiding, FilesIO, InputValidation
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None.
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+\texttt{GetUserInput} & - & FlockingParameter & MissingK, 
+MissingN, MissingT, MissingP, MissingR, ErrorK, ErrorN, ErrorT, ErrorP, ErrorR \\ \\
+\texttt{GetSimulateParam} & - & FlockingParameter & ErrorObject \\
+\texttt{GetMethod} & - & str & MissingMethod, ErrorMethod \\
+\texttt{GetAnimaStatus} & - & AnimationStatus & ErrorObject \\
+\texttt{GetFlockStatus} & - & FlockingStatus[] & ErrorObject \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+\item kaInput: the UI input object used to read the value of parameter ka.
+\item kcInput: the UI input object used to read the value of parameter kc.
+\item ksInput: the UI input object used to read the value of parameter ks.
+\item koInput: the UI input object used to read the value of parameter ko.
+\item kgInput: the UI input object used to read the value of parameter kg.
+\item tInput: the UI input object used to read the value of length of timestep.
+\item nInput: the UI input object used to read the value of number of ageng.
+\item obsInput: the UI input object used to read the information of obstacles.
+\item methodInput: the UI input object used to read the user input ODE method.
+\item initPathInput: the UI input object used to read the file path of initial flocking parameters.
+\item animaPathInput: the UI input object used to read the file path of animation status.
+\item flockPathInput: the UI input object used to read the file path of flocking metrics.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent GetUserInput():
+\begin{itemize}
+\item output: \texttt{out} := FlockingParameter, a new FlockingParameter object 
+defined by the user-provided values
+\item exception: all exceptions are thrown by InputValidation.
+% \item output: out := (get the parameters user input and set them into a new FlockingParameter)
+% \item exception: exc := ((missing any parameters in out.ka, out.kc, out.ks, 
+% out.ko, out.kg, out.n, out.t )=> MissingInput | (missing p or r at any out.obs[i]) => ErrorObs)
+\end{itemize}
+
+\noindent GetSimulateParam():
+\begin{itemize}
+\item output: \texttt{out} := FlockingParameter, a new FlockingParameter object 
+read from the user-specified path.
+\item exception: 
+\begin{itemize}
+    \item ErrorObject, if there is no such file or the FlockingParameter read 
+    from the file is null
+\end{itemize}
+\end{itemize}
+
+\noindent GetMethod():
+\begin{itemize}
+\item output: \texttt{out} := str, the ODE method user chooses.
+\item exception: all exceptions are thrown by InputValidation.
+\end{itemize}
+
+\noindent GetAnimaStatus():
+\begin{itemize}
+\item output: \texttt{out} := AnimationStatus[], a list of AnimationStatus object 
+read from the user-specified paths.
+\item exception: 
+\begin{itemize}
+    \item ErrorObject, if for any paht, there is no such file or the 
+    AnimationStatus read from the file is null
+\end{itemize}
+\end{itemize}
+
+\noindent GetFlockStatus():
+\begin{itemize}
+\item output: \texttt{out} := FlockingStatus[], a list of FlockingStatus object 
+read from the user-specified paths.
+\item exception: 
+\begin{itemize}
+    \item ErrorObject, if for any paht, there is no such file or the 
+    FlockingStatus read from the file is null
+\end{itemize}
+\end{itemize}
+
+~\newpage
+
+\section{MIS of File I/O Module} \label{mFile}
+
+\subsection{Module}
+
+FilesIO
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None.
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+\texttt{Read} & \texttt{path}: str, \texttt{T}: type & T & NoFileFound \\
+\texttt{Write} & \texttt{path}: str, \texttt{contents}: str & - & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent Read(path):
+\begin{itemize}
+\item output: out := the contents of file.
+\item exception: 
+\begin{itemize}
+    \item NoFileFound, if the file at specific path is not found.
+\end{itemize}
+\end{itemize}
+
+\noindent Write(path, contents):
+\begin{itemize}
+\item output: None.
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Animation Simulator Module} \label{mAnima}
+
+\subsection{Module}
+
+AnimationSimulator
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None.
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+\texttt{PlaySimulation} & \texttt{anima}: AnimationStatus & - & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent PlaySimulation(anima):
+\begin{itemize}
+\item output: None, the animation will be displayed in the Application Window.
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Chart Drawer Module} \label{mChart}
+
+\subsection{Module}
+
+ChartDrawer
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None.
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+\texttt{DrawChart} & \texttt{matrics}: FlockingStatus[] & - & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent DrawChart(matrics):
+\begin{itemize}
+\item output: None, and the line charts will be displayed in the Application Window.
+\end{itemize}
+
+% ~\newpage
+
+
+
+% \section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
+%   cross-referencing}
+
+% \wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+% \wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+% \subsection{Module}
+
+% \wss{Short name for the module}
+
+% \subsection{Uses}
+
+
+% \subsection{Syntax}
+
+% \subsubsection{Exported Constants}
+
+% \subsubsection{Exported Access Programs}
+
+% \begin{center}
+% \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+% \hline
+% \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+% \hline
+% \wss{accessProg} & - & - & - \\
+% \hline
+% \end{tabular}
+% \end{center}
+
+% \subsection{Semantics}
+
+% \subsubsection{State Variables}
+
+% \wss{Not all modules will have state variables.  State variables give the module
+%   a memory.}
+
+% \subsubsection{Environment Variables}
+
+% \wss{This section is not necessary for all modules.  Its purpose is to capture
+%   when the module has external interaction with the environment, such as for a
+%   device driver, screen interface, keyboard, file, etc.}
+
+% \subsubsection{Assumptions}
+
+% \wss{Try to minimize assumptions and anticipate programmer errors via
+%   exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+% \subsubsection{Access Routine Semantics}
+
+% \noindent \wss{accessProg}():
+% \begin{itemize}
+% \item transition: \wss{if appropriate} 
+% \item output: \wss{if appropriate} 
+% \item exception: \wss{if appropriate} 
+% \end{itemize}
+
+% \wss{A module without environment variables or state variables is unlikely to
+%   have a state transition.  In this case a state transition can only occur if
+%   the module is changing the state of another module.}
+
+% \wss{Modules rarely have both a transition and an output.  In most cases you
+%   will have one or the other.}
+
+% \subsubsection{Local Functions}
+
+% \wss{As appropriate} \wss{These functions are for the purpose of specification.
+%   They are not necessarily something that is going to be implemented
+%   explicitly.  Even if they are implemented, they are not exported; they only
+%   have local scope.}
 
 \newpage
 
 \bibliographystyle {plainnat}
 \bibliography {../../../refs/References}
 
-\newpage
+% \newpage
 
-\section{Appendix} \label{Appendix}
+% \section{Appendix} \label{Appendix}
 
-\wss{Extra information if required}
+% \wss{Extra information if required}
 
-\newpage{}
+% \newpage{}
 
-\section*{Appendix --- Reflection}
+% \section*{Appendix --- Reflection}
 
-\wss{Not required for CAS 741 projects}
+% \wss{Not required for CAS 741 projects}
 
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Problem Analysis and Design.
+% The information in this section will be used to evaluate the team members on the
+% graduate attribute of Problem Analysis and Design.
 
-\input{../../Reflection.text}
+% \input{../../Reflection.text}
 
-\begin{enumerate}
-  \item What went well while writing this deliverable? 
-  \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
-  \item Which of your design decisions stemmed from speaking to your client(s)
-  or a proxy (e.g. your peers, stakeholders, potential users)? For those that
-  were not, why, and where did they come from?
-  \item While creating the design doc, what parts of your other documents (e.g.
-  requirements, hazard analysis, etc), it any, needed to be changed, and why?
-  \item What are the limitations of your solution?  Put another way, given
-  unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
-  \item Give a brief overview of other design solutions you considered.  What
-  are the benefits and tradeoffs of those other designs compared with the chosen
-  design?  From all the potential options, why did you select the documented design?
-  (LO\_Explores)
-  \item (After you have implemented another team's module, which means this
-  isn't filled in until after the original deadline). What did you learn by
-  implementing another team's module? Were all the details you needed in the
-  documentation, or did you need to make assumptions, or ask the other team
-  questions?  If your team also had another team implement one of your modules,
-  what was this experience like?  Are there things in your documentation you
-  could have changed to make the process go more smoothly for when an
-  ``outsider'' completes some of the implementation?
-\end{enumerate}
+% \begin{enumerate}
+%   \item What went well while writing this deliverable? 
+%   \item What pain points did you experience during this deliverable, and how
+%     did you resolve them?
+%   \item Which of your design decisions stemmed from speaking to your client(s)
+%   or a proxy (e.g. your peers, stakeholders, potential users)? For those that
+%   were not, why, and where did they come from?
+%   \item While creating the design doc, what parts of your other documents (e.g.
+%   requirements, hazard analysis, etc), it any, needed to be changed, and why?
+%   \item What are the limitations of your solution?  Put another way, given
+%   unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
+%   \item Give a brief overview of other design solutions you considered.  What
+%   are the benefits and tradeoffs of those other designs compared with the chosen
+%   design?  From all the potential options, why did you select the documented design?
+%   (LO\_Explores)
+%   \item (After you have implemented another team's module, which means this
+%   isn't filled in until after the original deadline). What did you learn by
+%   implementing another team's module? Were all the details you needed in the
+%   documentation, or did you need to make assumptions, or ask the other team
+%   questions?  If your team also had another team implement one of your modules,
+%   what was this experience like?  Are there things in your documentation you
+%   could have changed to make the process go more smoothly for when an
+%   ``outsider'' completes some of the implementation?
+% \end{enumerate}
 
 
 \end{document}
