@@ -71,7 +71,7 @@ This section records information for easy reference.
   R & Requirement\\
   SC & Scientific Computing \\
   SRS & Software Requirements Specification\\
-  \progname & Explanation of program name\\
+  \progname & Program Name\\
   UC & Unlikely Change \\
   \bottomrule
 \end{tabular}\\
@@ -177,8 +177,15 @@ will potentially need to be modified. Hence, it is not intended that these
 decisions will be changed.
 
 \begin{description}
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucObsShape}:] Obstacles may not be 
-limited to circular shapes. [SRS: LR2]
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucObsShape}:] Obstacles may 
+only be limited to circular shapes, and the changes to their shapes are 
+considered as unlikely change. [SRS: LC2]
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucMoveLogic}:] The agent movement 
+behavior is based on the Boids Model, and changes to an alternative movement 
+logic are considered unlikely.
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucMatrics}:] The flocking state 
+is defined by mean speed, alignment, and cohesion, and it is unlikely that 
+additional matrics will be introduced.
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
@@ -223,8 +230,8 @@ actually be implemented.
 & Force Module \\
 & ODE Solver Module\\
 & Flocking Metrics Module\\
-& Dynamic Module \\
-& Obstacles Module \\
+& Dynamics Module \\
+& Obstacle Module \\
 & Flocking Parameter Module \\
 & Animation Status Module \\
 & Flocking Status Module \\
@@ -361,7 +368,7 @@ point or a timeout occurs.
 \item[Type of Module:] Abstract Object
 \end{description}
 
-\subsubsection{Obstacles Module (\mref{mObs})}
+\subsubsection{Obstacle Module (\mref{mObs})}
 
 \begin{description}
 \item[Secrets:] The data structures used to store the parameters of 
