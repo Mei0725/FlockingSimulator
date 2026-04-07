@@ -203,7 +203,7 @@ None.
 initial positions of the flocking simulation, and save it using File I/O Module 
 by following steps. 
 \end{itemize}
-\textit{\# Get user input and set it in the FlockingParameter object}
+\textit{\# Get user input from InputReader and set it in the FlockingParameter object}
 
 parameters :=  GetUserInput()
 
@@ -211,9 +211,11 @@ parameters :=  GetUserInput()
 
 FlockingInit(parameters)
 
-\textit{\# Save the parameters to a JSON file}
+\textit{\# Save the parameters to a file by FilesIO}
 
 path := Save(parameters)
+
+\textit{\# Show the path in GUI}
 
 \vspace{2em}
 
@@ -224,21 +226,23 @@ path := Save(parameters)
 Input Reader Module, calculate the process of simulation using Dynamics Module, 
 and save the results using File I/O Module by following steps. 
 \end{itemize}
-\textit{\# Get the flocking parameters from the user input path}
+\textit{\# Get the FlockingParameter parameters and method from InputReader}
 
 parameters :=  GetSimulateParam()
 
 method := GetMethod()
 
-\textit{\# Calculate the metrics of flocking in the simulation}
+\textit{\# Calculate the metrics of flocking in the simulation by Dynamics}
 
 [animationStatus, flockMetrics] := FlockSimulation(parameters, method)
 
-\textit{\# Save the parameters to a JSON file}
+\textit{\# Save the parameters to a file by FilesIO}
 
 animaPath := Save(animationStatus)
 
 flockPath := Save(flockMetrics)
+
+\textit{\# Show the path in GUI}
 
 \vspace{2em}
 
@@ -249,11 +253,11 @@ flockPath := Save(flockMetrics)
 Input Reader Module, generate the animation and display it using Animation 
 Simulator Module by following steps. 
 \end{itemize}
-\textit{\# Get the flocking parameters from the user input path}
+\textit{\# Get the AnimationStatus anime from InputReader}
 
 anima :=  GetAnimaStatus()
 
-\textit{\# Generate the animation and display}
+\textit{\# Generate the animation and display by AnimationSimulator}
 
 PlaySimulation(anima)
 
@@ -262,14 +266,14 @@ PlaySimulation(anima)
 \noindent DrawClicked():
 
 \begin{itemize}
-\item transition: Read the animation information from the paht users input from 
+\item transition: Read the animation information from the path users input from 
 Input Reader Module, draw the line charts and display it by following steps. 
 \end{itemize}
-\textit{\# Get the flocking parameters from the user input path}
+\textit{\# Get the FlockingStatus flock from InputReader}
 
 flock :=  GetFlockStatus()
 
-\textit{\# Draw the line charts and display}
+\textit{\# Draw the line charts and display by ChartDrawer}
 
 DrawChart(flock)
 
@@ -516,7 +520,7 @@ None.
 
 \subsubsection{Access Routine Semantics}
 
-\noindent EEulerMethod(i, ps, vs, info, goal):
+\noindent EEulerMethod(ps, vs, info, goal):
 \begin{itemize}
 \item output: \\
 a := CalForce(ps, vs, info, goal)
@@ -524,16 +528,15 @@ out := $\begin{bmatrix} v_{next} \\ p_{next} \end{bmatrix} = \begin{bmatrix} vs[
 \end{itemize}
 
 \noindent RK4Method(ps, vs, info, goal):
-\textit{\# solving a = CalForce(i, ps, vs, info, goal) by Force Module}
+\textit{\# updating the p and v of all agents in this flocking, and solving a = f(i, ps, vs, info, goal) by Force Module for next k}
 \begin{itemize}
 \item output: \\
 $k_1 := \begin{bmatrix} a_1 \\ v \end{bmatrix}$ \\
-$k_2 := k_1 + \begin{bmatrix} a_2 \\ v + \frac{t}{2}k_{1} \end{bmatrix}$ \\
+$k_2 := \begin{bmatrix} a_2 \\ v + \frac{t}{2}k_{1} \end{bmatrix}$ \\
 $k_3 := \begin{bmatrix} a_3 \\ v + \frac{t}{2}k_{2} \end{bmatrix}$ \\
 $k_4 = \begin{bmatrix} a_4 \\ v + t\,k_{3} \end{bmatrix}$ \\
 $\text{out} := \begin{bmatrix} v_{next} \\ p_{next} \end{bmatrix} = \begin{bmatrix} v \\ p \end{bmatrix} + \frac{t}{6}(k_1 + 2k_2 + 2k_3 + k_4)$
 \end{itemize}
-...
 
 \noindent SIEulerMethod(ps, vs, info, goal):
 \begin{itemize}
@@ -712,7 +715,8 @@ N/A
 
 \subsection{Syntax}
 
-None.
+The class uses the default constructor provided by the language. All 
+attributes are publicly accessible.
 
 \subsection{Semantics}
 
@@ -737,7 +741,8 @@ N/A
 
 \subsection{Syntax}
 
-None.
+The class uses the default constructor provided by the language. All 
+attributes are publicly accessible.
 
 \subsection{Semantics}
 
@@ -769,7 +774,8 @@ N/A
 
 \subsection{Syntax}
 
-None.
+The class uses the default constructor provided by the language. All 
+attributes are publicly accessible.
 
 \subsection{Semantics}
 
@@ -796,7 +802,8 @@ N/A
 
 \subsection{Syntax}
 
-None.
+The class uses the default constructor provided by the language. All 
+attributes are publicly accessible.
 
 \subsection{Semantics}
 
@@ -855,7 +862,7 @@ MissingN, MissingT, MissingP, MissingR, ErrorK, ErrorN, ErrorT, ErrorP, ErrorR \
 \item koInput: the UI input object used to read the value of parameter ko.
 \item kgInput: the UI input object used to read the value of parameter kg.
 \item tInput: the UI input object used to read the value of length of timestep.
-\item nInput: the UI input object used to read the value of number of ageng.
+\item nInput: the UI input object used to read the value of number of agent.
 \item obsInput: the UI input object used to read the information of obstacles.
 \item methodInput: the UI input object used to read the user input ODE method.
 \item initPathInput: the UI input object used to read the file path of initial flocking parameters.
@@ -898,7 +905,7 @@ read from the user-specified path.
 read from the user-specified paths.
 \item exception: 
 \begin{itemize}
-    \item ErrorObject, if for any paht, there is no such file or the 
+    \item ErrorObject, if for any path, there is no such file or the 
     AnimationStatus read from the file is null
 \end{itemize}
 \end{itemize}
@@ -909,7 +916,7 @@ read from the user-specified paths.
 read from the user-specified paths.
 \item exception: 
 \begin{itemize}
-    \item ErrorObject, if for any paht, there is no such file or the 
+    \item ErrorObject, if for any path, there is no such file or the 
     FlockingStatus read from the file is null
 \end{itemize}
 \end{itemize}
@@ -1027,7 +1034,7 @@ None.
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\texttt{DrawChart} & \texttt{matrics}: FlockingStatus[] & - & - \\
+\texttt{DrawChart} & \texttt{metrics}: FlockingStatus[] & - & - \\
 \hline
 \end{tabular}
 \end{center}
@@ -1036,7 +1043,7 @@ None.
 
 \subsubsection{Access Routine Semantics}
 
-\noindent DrawChart(matrics):
+\noindent DrawChart(metrics):
 \begin{itemize}
 \item output: None, and the line charts will be displayed in the Application Window.
 \end{itemize}
