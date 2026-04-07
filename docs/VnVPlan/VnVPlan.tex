@@ -223,7 +223,7 @@ This project is planned to be developed in Unity using C\#, and some of Unity's
 built-in tools and package will be used for automated testing.
 
 \begin{itemize}
-\item Linters: Roslyn Analyzers.
+\item Linters: Roslyn Analyzers(StyleCop.Analyzers).
 
 \item System and Unit Tests: Unity Test Framework.
 
@@ -414,11 +414,11 @@ them automatically using the Unity Test Framework.
 \hline
 & $\mathbf{M}$ & Valid? & Error Message \\
 \hline
-OTF\refstepcounter{mitnum}\themitnum & EEuler & Y & No error message.\\
+MTF\refstepcounter{mitnum}\themitnum & EEuler & Y & No error message.\\
 \hline
-OTF\refstepcounter{mitnum}\themitnum & Euler & N & $\mathbf{M}$ must be in \{EEuler, RK4, SIEuler\}.\\
+MTF\refstepcounter{mitnum}\themitnum & Euler & N & $\mathbf{M}$ must be in \{EEuler, RK4, SIEuler\}.\\
 \hline
-OTF\refstepcounter{mitnum}\themitnum & - & N & Data missing for$\mathbf{M}$.\\
+MTF\refstepcounter{mitnum}\themitnum & - & N & Data missing for$\mathbf{M}$.\\
 \hline
 \end{longtable}
 
@@ -574,10 +574,7 @@ How test will be performed:
 \begin{itemize}
 \item $\forall t \ge 0,\; \forall i \in \{1,\dots,N\},\; \|\mathbf{v}_{i,t}\| \le v_{max}$
 \end{itemize}
-$v_{max}$ is a boundary introduced to maintain the stability of the 
-flocking behavior. Its exact value has not yet been determined; it may later 
-be computed based on the dynamical model in \citet{OlfatiFlocking2006}, or 
-set as a fixed value as done in \citet{AndrewFlocking2011}.
+$v_{max}$ is defined as 14.
 
 \begin{longtable}{c c c c c c c c c c}
 \caption{Input of maximum-velocity-verification} \label{TblBoundTest1} \\
@@ -715,19 +712,17 @@ below.
 
 Type: Manual.
 					
-Initial State: The software has completed the implementation of its core 
-functionalities, and the total development time has been recorded as 
-$\mathbf{T}_{dev}$.
+Initial State: The software is set up and ready.
 					
-Input/Condition: Adding support for a new feature, such as supporting a new 
-numerical integration method, Runge-Kutta 3.
+Input/Condition: None.
 					
-Output/Result: Implementing the corresponding feature and record the time 
-required as $\mathbf{T}_{add}$. 
+Output/Result: Time required to implement a new ODE solver (e.g., RK3), denoted as $T_{new}$.
 					
-How test will be performed: Compare the original development time 
-$\mathbf{T}_{dev}$ with the time required to implement the new feature 
-$\mathbf{T}_{add}$ to verify whether it satisfies the requirement of NFR4.
+How test will be performed: After completing the baseline system implementation, 
+record the time required to add a new ODE solver (RK3) into the existing system. 
+The implementation time is recorded as $T_{new}$, and compared against the 
+baseline development time $T_{base}$. The system is considered maintainable 
+if $T_{new} < 0.1 \cdot T_{base}$
 
 \end{enumerate}
 
