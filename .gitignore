@@ -277,3 +277,20 @@ TSWLatexianTemp*
 
 # DS_Store file from Mac computers
 .DS_Store
+
+# Unity src
+src/Logs/
+src/Library/
+src/Temp/
+src/UserSettings/
+*.csproj
+*.unityproj
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.vsconfig
+*.sln
