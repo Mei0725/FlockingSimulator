@@ -36,6 +36,7 @@ jobs:
           projectPath: src
           unityVersion: 2022.3.15f1
           testMode: playmode
+          artifactsPath: artifacts
           coverageOptions: "generateHtmlReport"
 
       # 4. Upload results
@@ -44,4 +45,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TestResults
-          path: src/artifacts
+          path: artifacts
