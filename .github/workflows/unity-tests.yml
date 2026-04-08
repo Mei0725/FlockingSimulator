@@ -49,10 +49,12 @@ jobs:
 
       # 5. Summary
       - name: Test Summary
-        uses: test-summary/action@v2
-        with:
-          paths: "artifacts/*.xml"
+        uses: dorny/test-reporter@v1
         if: always()
+        with:
+          name: Unity Test Results
+          path: 'artifacts/*.xml'
+          reporter: java-junit
 
       # 6. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
