@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoverageReport scope="Summary">
+  <Summary>
+    <Generatedon>04/08/2026 - 19:39:10</Generatedon>
+    <Parser>MultiReportParser (2x OpenCoverParser)</Parser>
+    <Assemblies>1</Assemblies>
+    <Classes>33</Classes>
+    <Files>18</Files>
+    <Coveredlines>871</Coveredlines>
+    <Uncoveredlines>124</Uncoveredlines>
+    <Coverablelines>995</Coverablelines>
+    <Totallines>1700</Totallines>
+    <Linecoverage>87.5</Linecoverage>
+    <Coveredbranches>0</Coveredbranches>
+    <Totalbranches>0</Totalbranches>
+    <Coveredmethods>101</Coveredmethods>
+    <Totalmethods>113</Totalmethods>
+    <Methodcoverage>89.3</Methodcoverage>
+  </Summary>
+  <Coverage>
+    <Assembly name="Game.Runtime" classes="33" coverage="87.5" coveredlines="871" coverablelines="995" totallines="3182" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="101" totalmethods="113" methodcoverage="89.3">
+      <Class name="AnimationSimulator" coverage="83.1" coveredlines="89" coverablelines="107" totallines="157" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="7" totalmethods="8" methodcoverage="87.5" />
+      <Class name="CameraManager" coverage="100" coveredlines="31" coverablelines="31" totallines="80" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="5" totalmethods="5" methodcoverage="100" />
+      <Class name="ChartDrawer" coverage="96.6" coveredlines="86" coverablelines="89" totallines="139" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="7" totalmethods="8" methodcoverage="87.5" />
+      <Class name="ChartsController" coverage="68.5" coveredlines="61" coverablelines="89" totallines="122" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="10" totalmethods="11" methodcoverage="90.9" />
+      <Class name="Dynamics" coverage="100" coveredlines="58" coverablelines="58" totallines="97" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="4" totalmethods="4" methodcoverage="100" />
+      <Class name="FilesIO" coverage="100" coveredlines="13" coverablelines="13" totallines="27" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="2" totalmethods="2" methodcoverage="100" />
+      <Class name="FlockingEntity.Agents" coverage="100" coveredlines="1" coverablelines="1" totallines="19" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="FlockingEntity.AnimationStatus" coverage="100" coveredlines="1" coverablelines="1" totallines="19" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="FlockingEntity.FlockingParameter" coverage="100" coveredlines="1" coverablelines="1" totallines="59" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="FlockingEntity.FlockingStatus" coverage="100" coveredlines="3" coverablelines="3" totallines="14" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="FlockingEntity.V3" coverage="100" coveredlines="15" coverablelines="15" totallines="59" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="3" totalmethods="3" methodcoverage="100" />
+      <Class name="FlockingMetrics" coverage="100" coveredlines="41" coverablelines="41" totallines="66" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="5" totalmethods="5" methodcoverage="100" />
+      <Class name="Force" coverage="89.3" coveredlines="84" coverablelines="94" totallines="145" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="7" totalmethods="7" methodcoverage="100" />
+      <Class name="InitObsPreview" coverage="100" coveredlines="22" coverablelines="22" totallines="41" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="2" totalmethods="2" methodcoverage="100" />
+      <Class name="InputReader" coverage="85" coveredlines="57" coverablelines="67" totallines="115" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="5" totalmethods="5" methodcoverage="100" />
+      <Class name="InputValidation" coverage="75.7" coveredlines="81" coverablelines="107" totallines="196" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="11" totalmethods="11" methodcoverage="100" />
+      <Class name="MainController" coverage="91.8" coveredlines="90" coverablelines="98" totallines="157" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="11" totalmethods="13" methodcoverage="84.6" />
+      <Class name="MyExceptions.ErrorK" coverage="100" coveredlines="3" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="MyExceptions.ErrorMethod" coverage="100" coveredlines="3" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="MyExceptions.ErrorN" coverage="100" coveredlines="3" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="MyExceptions.ErrorP" coverage="100" coveredlines="3" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="MyExceptions.ErrorR" coverage="0" coveredlines="0" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="0" totalmethods="1" methodcoverage="0" />
+      <Class name="MyExceptions.ErrorT" coverage="100" coveredlines="3" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="MyExceptions.MissingK" coverage="100" coveredlines="3" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="MyExceptions.MissingMethod" coverage="100" coveredlines="3" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="MyExceptions.MissingN" coverage="0" coveredlines="0" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="0" totalmethods="1" methodcoverage="0" />
+      <Class name="MyExceptions.MissingP" coverage="50" coveredlines="3" coverablelines="6" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="2" methodcoverage="50" />
+      <Class name="MyExceptions.MissingPath" coverage="100" coveredlines="3" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="MyExceptions.MissingR" coverage="0" coveredlines="0" coverablelines="6" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="0" totalmethods="2" methodcoverage="0" />
+      <Class name="MyExceptions.MissingT" coverage="0" coveredlines="0" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="0" totalmethods="1" methodcoverage="0" />
+      <Class name="MyExceptions.NoFileFound" coverage="100" coveredlines="3" coverablelines="3" totallines="108" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="1" totalmethods="1" methodcoverage="100" />
+      <Class name="ODESolver" coverage="100" coveredlines="79" coverablelines="79" totallines="104" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="4" totalmethods="4" methodcoverage="100" />
+      <Class name="UIController" coverage="90.3" coveredlines="28" coverablelines="31" totallines="54" branchcoverage="" coveredbranches="0" totalbranches="0" coveredmethods="4" totalmethods="5" methodcoverage="80" />
+    </Assembly>
+  </Coverage>
+</CoverageReport>

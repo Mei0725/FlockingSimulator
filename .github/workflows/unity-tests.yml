@@ -2,13 +2,13 @@ name: Unity Tests & Coverage
 
 on:
   push:
+    branches: [ main, Mei0725-patch-1 ]
   pull_request:
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       # 1. Checkout
       - name: Checkout repository
@@ -20,22 +20,111 @@ jobs:
       - name: Cache Library
         uses: actions/cache@v4
         with:
-          path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          path: src/Library
+          key: Library-${{ runner.os }}-${{ hashFiles('src/Packages/manifest.json') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
 
-      # 3. Run Unity Tests with Coverage
+      # 3. Run Unity Tests
       - name: Run Unity Tests
         uses: game-ci/unity-test-runner@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
+          projectPath: src
           unityVersion: 2022.3.15f1
           testMode: playmode
-          coverageOptions: "generateHtmlReport"
+          artifactsPath: artifacts 
+          useHostNetwork: true
+          coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;pathFilters:-**/UnitTests/**,-**/TextMesh*Pro/**"
+          # coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;assemblyFilters:+Assembly-CSharp,+Game.Runtime"
+          customParameters: "-debugCodeOptimization -enableCodeCoverage"
 
       # 4. Upload results
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: TestResults
-          path: artifacts
+      # - name: Upload Test Results
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: TestResults
+      #     path: artifacts
+
+      # 5. Summary
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "### Unity Test Results" >> $GITHUB_STEP_SUMMARY
+          
+          if [ ! -f artifacts/playmode-results.xml ]; then
+            echo "No test results found at artifacts/playmode-results.xml" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
+          TOTAL=$(grep -oP 'total="\K[^"]+' artifacts/playmode-results.xml | head -1)
+          PASSED=$(grep -oP 'passed="\K[^"]+' artifacts/playmode-results.xml | head -1)
+          FAILED=$(grep -oP 'failed="\K[^"]+' artifacts/playmode-results.xml | head -1)
+          SKIPPED=$(grep -oP 'skipped="\K[^"]+' artifacts/playmode-results.xml | head -1)
+          DURATION=$(grep -oP 'duration="\K[^"]+' artifacts/playmode-results.xml | head -1)
+
+          echo "| Stat | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Passed | $PASSED |" >> $GITHUB_STEP_SUMMARY
+          echo "| Failed | $FAILED |" >> $GITHUB_STEP_SUMMARY
+          echo "| Skipped | $SKIPPED |" >> $GITHUB_STEP_SUMMARY
+          echo "| Duration | ${DURATION}s |" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$FAILED" -gt "0" ]; then
+            echo " " >> $GITHUB_STEP_SUMMARY
+            echo "> **Warning:** There are failing tests. Please check the logs in Artifacts." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Debug - Find all HTML files
+        if: always()
+        run: |
+          echo "Listing all files in the runner to find index.html..."
+          find . -name "*.html"
+
+      - name: Prepare Docs Folder
+        if: always()
+        run: |
+          DEST_DIR="$GITHUB_WORKSPACE/src/test-report"
+          mkdir -p "$DEST_DIR"
+          rm -rf "$DEST_DIR"/*
+
+          if [ -d "./CodeCoverage/Report" ]; then
+            echo "Found Unity Report directory at ./CodeCoverage/Report"
+            cp -r ./CodeCoverage/Report/* "$DEST_DIR/"
+          else
+            echo "./CodeCoverage/Report not found, searching for index.html..."
+            REPORT_SRC=$(find . -name "index.html" -exec dirname {} \; | head -n 1)
+            
+            if [ -n "$REPORT_SRC" ]; then
+              echo "Found index.html in $REPORT_SRC, copying entire directory..."
+              cp -r "$REPORT_SRC"/* "$DEST_DIR/"
+            else
+              echo "Error: No index.html or Report directory found!"
+              exit 1
+            fi
+          fi
+
+          echo "Files successfully moved to $DEST_DIR:"
+          ls -F "$DEST_DIR"
+
+      - name: Commit and Push to Current Branch
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          CURRENT_BRANCH=${{ github.head_ref || github.ref_name }}
+          echo "Target branch is $CURRENT_BRANCH"
+
+          git add -f src/test-report/
+          
+          if git diff --staged --quiet; then
+            echo "No changes detected. This might be because the files are already there or .gitignore is interfering."
+          else
+            git commit -m "chore: update test report [skip ci]"
+            git push origin HEAD:$CURRENT_BRANCH
+          fi
