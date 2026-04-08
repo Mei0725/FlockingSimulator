@@ -3,6 +3,7 @@ name: Unity Tests & Coverage
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
