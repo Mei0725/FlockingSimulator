@@ -38,7 +38,7 @@ jobs:
           testMode: playmode
           artifactsPath: artifacts 
           useHostNetwork: true
-          coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;pathFilters:-src/Assets/UnitTests,-src/Assets/TextMesh Pro"
+          coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;pathFilters:-**/UnitTests/**,-**/TextMesh*Pro/**"
           # coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;assemblyFilters:+Assembly-CSharp,+Game.Runtime"
           customParameters: "-debugCodeOptimization -enableCodeCoverage"
 
@@ -88,7 +88,7 @@ jobs:
       - name: Prepare Docs Folder
         if: always()
         run: |
-          DEST_DIR="$GITHUB_WORKSPACE/docs/test-report"
+          DEST_DIR="$GITHUB_WORKSPACE/src/test-report"
           mkdir -p "$DEST_DIR"
           rm -rf "$DEST_DIR"/*
 
@@ -111,15 +111,6 @@ jobs:
           echo "Files successfully moved to $DEST_DIR:"
           ls -F "$DEST_DIR"
 
-      # - name: Commit and Push to Docs
-      #   if: always()
-      #   run: |
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #     git add docs/
-      #     git commit -m "chore: update test report [skip ci]" || echo "No changes to commit"
-      #     git push origin ${{ github.head_ref || github.ref_name }}
-
       - name: Commit and Push to Current Branch
         if: always()
         run: |
@@ -129,7 +120,7 @@ jobs:
           CURRENT_BRANCH=${{ github.head_ref || github.ref_name }}
           echo "Target branch is $CURRENT_BRANCH"
 
-          git add -f docs/test-report/
+          git add -f src/test-report/
           
           if git diff --staged --quiet; then
             echo "No changes detected. This might be because the files are already there or .gitignore is interfering."
