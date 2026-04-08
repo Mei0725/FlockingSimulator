@@ -38,7 +38,7 @@ jobs:
           testMode: playmode
           artifactsPath: artifacts 
           useHostNetwork: true
-          coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;"
+          coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;pathFilters:-src/Assets/UnitTests,-src/Assets/TextMesh Pro"
           # coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;assemblyFilters:+Assembly-CSharp,+Game.Runtime"
           customParameters: "-debugCodeOptimization -enableCodeCoverage"
 
