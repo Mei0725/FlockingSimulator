@@ -49,12 +49,32 @@ jobs:
 
       # 5. Summary
       - name: Test Summary
-        uses: dorny/test-reporter@v1
         if: always()
-        with:
-          name: Unity Test Results
-          path: 'artifacts/*.xml'
-          reporter: dotnet-nunit
+        run: |
+          echo "### 🎮 Unity Test Results" >> $GITHUB_STEP_SUMMARY
+          
+          if [ ! -f artifacts/playmode-results.xml ]; then
+            echo "No test results found at artifacts/playmode-results.xml" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
+          TOTAL=$(grep -oP 'total="\K[^"]+' artifacts/playmode-results.xml | head -1)
+          PASSED=$(grep -oP 'passed="\K[^"]+' artifacts/playmode-results.xml | head -1)
+          FAILED=$(grep -oP 'failed="\K[^"]+' artifacts/playmode-results.xml | head -1)
+          SKIPPED=$(grep -oP 'skipped="\K[^"]+' artifacts/playmode-results.xml | head -1)
+          DURATION=$(grep -oP 'duration="\K[^"]+' artifacts/playmode-results.xml | head -1)
+
+          echo "| Stat | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Passed | $PASSED |" >> $GITHUB_STEP_SUMMARY
+          echo "| Failed | $FAILED |" >> $GITHUB_STEP_SUMMARY
+          echo "| Skipped | $SKIPPED |" >> $GITHUB_STEP_SUMMARY
+          echo "| Duration | ${DURATION}s |" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$FAILED" -gt "0" ]; then
+            echo " " >> $GITHUB_STEP_SUMMARY
+            echo "> **Warning:** There are failing tests. Please check the logs in Artifacts." >> $GITHUB_STEP_SUMMARY
+          fi
 
       # 6. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
