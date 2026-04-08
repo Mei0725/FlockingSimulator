@@ -54,7 +54,7 @@ jobs:
         with:
           name: Unity Test Results
           path: 'artifacts/*.xml'
-          reporter: java-junit
+          reporter: dotnet-nunit
 
       # 6. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
