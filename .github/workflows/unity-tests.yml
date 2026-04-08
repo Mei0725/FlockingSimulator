@@ -78,15 +78,20 @@ jobs:
             echo "> **Warning:** There are failing tests. Please check the logs in Artifacts." >> $GITHUB_STEP_SUMMARY
           fi
 
-      # - name: Prepare Docs Folder
-      #   if: always()
-      #   run: |
-      #     mkdir -p docs/test-report
-      #     if [ -d "artifacts/CodeCoverage" ]; then
-      #       cp -r artifacts/CodeCoverage/* docs/test-report/
-      #     else
-      #       cp artifacts/*.xml docs/test-report/ || true
-      #     fi
+      - name: Prepare Docs Folder
+        if: always()
+        run: |
+          mkdir -p docs/test-report
+
+          rm -rf docs/test-report/*
+          
+          if [ -d "./CodeCoverage/Report" ]; then
+            cp -r ./CodeCoverage/Report/* docs/test-report/
+            echo "Coverage report copied to docs/test-report"
+          else
+            echo "Could not find ./CodeCoverage/Report"
+            exit 1
+          fi
 
       # - name: Commit and Push to Docs
       #   if: always()
@@ -96,8 +101,8 @@ jobs:
       #     git add docs/
       #     git commit -m "chore: update test report [skip ci]" || echo "No changes to commit"
       #     git push origin ${{ github.head_ref || github.ref_name }}
-      - name: Debug - Find all HTML files
-        if: always()
-        run: |
-          echo "Listing all files in the runner to find index.html..."
-          find . -name "*.html"
+      # - name: Debug - Find all HTML files
+      #   if: always()
+      #   run: |
+      #     echo "Listing all files in the runner to find index.html..."
+      #     find . -name "*.html"
