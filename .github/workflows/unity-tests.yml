@@ -36,7 +36,7 @@ jobs:
           projectPath: src
           unityVersion: 2022.3.15f1
           testMode: playmode
-          artifactsPath: artifacts
+          artifactsPath: artifacts 
           coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml"
 
       # 4. Upload results
@@ -47,17 +47,20 @@ jobs:
           name: TestResults
           path: artifacts
 
+      # 5. Summary
       - name: Test Summary
         uses: test-summary/action@v2
         with:
-          paths: "artifacts/**/*.xml"
+          paths: "artifacts/*.xml"
         if: always()
 
+      # 6. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: artifacts/CodeCoverage 
+          publish_branch: gh-pages 
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
