@@ -81,15 +81,17 @@ jobs:
       - name: Prepare Docs Folder
         if: always()
         run: |
-          mkdir -p docs/test-report
-
-          rm -rf docs/test-report/*
+          DEST_DIR="$GITHUB_WORKSPACE/docs/test-report"
+          mkdir -p "$DEST_DIR"
+          
+          rm -rf "$DEST_DIR"/*
           
           if [ -d "./CodeCoverage/Report" ]; then
-            cp -r ./CodeCoverage/Report/* docs/test-report/
-            echo "Coverage report copied to docs/test-report"
+            cp -r ./CodeCoverage/Report/* "$DEST_DIR/"
+            echo " Files copied to $DEST_DIR"
+            ls -R "$DEST_DIR" | head -n 10
           else
-            echo "Could not find ./CodeCoverage/Report"
+            echo " Source directory ./CodeCoverage/Report not found"
             exit 1
           fi
 
