@@ -37,7 +37,7 @@ jobs:
           unityVersion: 2022.3.15f1
           testMode: playmode
           artifactsPath: artifacts
-          coverageOptions: "generateHtmlReport"
+          coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml"
 
       # 4. Upload results
       - name: Upload Test Results
@@ -46,3 +46,18 @@ jobs:
         with:
           name: TestResults
           path: artifacts
+
+      - name: Test Summary
+        uses: test-summary/action@v2
+        with:
+          paths: "artifacts/**/*.xml"
+        if: always()
+
+      - name: Deploy to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: artifacts/CodeCoverage 
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
