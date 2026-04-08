@@ -2,13 +2,13 @@ name: Unity Tests & Coverage
 
 on:
   push:
+    branches: [ main, Mei0725-patch-1 ]
   pull_request:
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       # 1. Checkout
       - name: Checkout repository
@@ -20,22 +20,28 @@ jobs:
       - name: Cache Library
         uses: actions/cache@v4
         with:
-          path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          path: src/Library
+          key: Library-${{ runner.os }}-${{ hashFiles('src/Packages/manifest.json') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
 
-      # 3. Run Unity Tests with Coverage
+      # 3. Run Unity Tests
       - name: Run Unity Tests
         uses: game-ci/unity-test-runner@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
+          projectPath: src
           unityVersion: 2022.3.15f1
           testMode: playmode
           coverageOptions: "generateHtmlReport"
 
       # 4. Upload results
       - name: Upload Test Results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: TestResults
-          path: artifacts
+          path: src/artifacts
