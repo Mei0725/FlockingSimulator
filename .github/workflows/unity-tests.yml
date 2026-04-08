@@ -1,0 +1,40 @@
+name: Unity Tests & Coverage
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      # 2. Cache Library
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+
+      # 3. Run Unity Tests with Coverage
+      - name: Run Unity Tests
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: 2022.3.15f1
+          testMode: playmode
+          coverageOptions: "generateHtmlReport"
+
+      # 4. Upload results
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: artifacts
