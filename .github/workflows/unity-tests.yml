@@ -2,7 +2,7 @@ name: Unity Tests & Coverage
 
 on:
   push:
-    branches: [ main, Mei0725-patch-1 ]
+    branches: [ main ]
   pull_request:
   workflow_dispatch:
 
@@ -39,18 +39,9 @@ jobs:
           artifactsPath: artifacts 
           useHostNetwork: true
           coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;pathFilters:-**/UnitTests/**,-**/TextMesh*Pro/**"
-          # coverageOptions: "generateHtmlReport;generateBadgeReport;combinedHtml;assemblyFilters:+Assembly-CSharp,+Game.Runtime"
           customParameters: "-debugCodeOptimization -enableCodeCoverage"
 
-      # 4. Upload results
-      # - name: Upload Test Results
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: TestResults
-      #     path: artifacts
-
-      # 5. Summary
+      # 4. Summary
       - name: Test Summary
         if: always()
         run: |
@@ -79,12 +70,13 @@ jobs:
             echo "> **Warning:** There are failing tests. Please check the logs in Artifacts." >> $GITHUB_STEP_SUMMARY
           fi
 
-      - name: Debug - Find all HTML files
-        if: always()
-        run: |
-          echo "Listing all files in the runner to find index.html..."
-          find . -name "*.html"
+      # - name: Debug - Find all HTML files
+      #   if: always()
+      #   run: |
+      #     echo "Listing all files in the runner to find index.html..."
+      #     find . -name "*.html"
 
+      # 5. Prepare Docs Folder(/src/test-report)
       - name: Prepare Docs Folder
         if: always()
         run: |
@@ -111,6 +103,7 @@ jobs:
           echo "Files successfully moved to $DEST_DIR:"
           ls -F "$DEST_DIR"
 
+      # Push the test report
       - name: Commit and Push to Current Branch
         if: always()
         run: |
