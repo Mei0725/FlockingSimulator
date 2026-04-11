@@ -173,7 +173,7 @@ public class FunctionalTest
 
     private void compareDiff(List<float> list0, List<float> list1, int index, bool lessDiff)
     {
-        // the difference between cohesion of Euler and SI Euler doesn't satisfy this check
+        // some test cases that don't satisfy this check when timestep is 0.01 and 0.1
         if (lessDiff && (index == 5 || index == 6 || index == 8))
         {
             return;
