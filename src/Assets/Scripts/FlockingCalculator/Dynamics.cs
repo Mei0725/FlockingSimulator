@@ -75,7 +75,7 @@ public class Dynamics
             case InputValidation.RK4:
                 result = ODESolver.RK4Method(ps, vs, info, GOAL_POINT);
                 break;
-            case InputValidation.ISEULER:
+            case InputValidation.SIEULER:
                 result = ODESolver.SIEulerMethod(ps, vs, info, GOAL_POINT);
                 break;
             default:

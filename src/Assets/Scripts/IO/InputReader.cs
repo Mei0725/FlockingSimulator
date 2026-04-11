@@ -67,7 +67,7 @@ public class InputReader : MonoBehaviour
                 method = InputValidation.RK4;
                 break;
             case 2:
-                method = InputValidation.ISEULER;
+                method = InputValidation.SIEULER;
                 break;
             default:
                 Debug.Log("Error ODE method:" + index);

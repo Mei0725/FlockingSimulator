@@ -91,7 +91,7 @@ public class DynamicsTests
     {
         var param = CreateSimpleParam();
 
-        var result = dynamics.FlockSimulation(param, InputValidation.ISEULER);
+        var result = dynamics.FlockSimulation(param, InputValidation.SIEULER);
 
         Assert.IsNotNull(result.flock);
     }

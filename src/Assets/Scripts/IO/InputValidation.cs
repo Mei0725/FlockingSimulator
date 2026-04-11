@@ -8,7 +8,7 @@ public static class InputValidation
 {
     public const string EEULER = "EEULER";
     public const string RK4 = "RK4";
-    public const string ISEULER = "ISEuler";
+    public const string SIEULER = "SIEuler";
 
     public const string ALIGNMENT = "Alignment";
     public const string COHESION = "Cohesion";
@@ -27,7 +27,7 @@ public static class InputValidation
     private static float rMin = 1;
     private static float rMax = 500;
     private static string pattern = @"-?\d+(\.\d+)?";
-    private static HashSet<string> methods = new HashSet<string> { EEULER, RK4, ISEULER };
+    private static HashSet<string> methods = new HashSet<string> { EEULER, RK4, SIEULER };
 
     public enum InputType
     {

@@ -6,6 +6,7 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.TestTools;
+using static UnityEngine.Networking.UnityWebRequest;
 
 public class InputReaderTests
 {
@@ -49,8 +50,8 @@ public class InputReaderTests
         reader.koInput = CreateInput("1");
         reader.kgInput = CreateInput("1");
         reader.tInput = CreateInput("0.01");
-        reader.nInput = CreateInput("10");
-        reader.obsInput = CreateInput("0,0,10");
+        reader.nInput = CreateInput("100");
+        reader.obsInput = CreateInput("(100,100),50");
 
         reader.methodInput = CreateDropdown(0);
 
@@ -71,19 +72,8 @@ public class InputReaderTests
         var result = reader.GetUserInput();
 
         Assert.AreEqual(1f, result.ka);
-        Assert.AreEqual(10, result.n);
+        Assert.AreEqual(100, result.n);
         Assert.AreEqual(1, result.obs.Count);
-    }
-
-    [Test]
-    public void GetUserInput_Invalid_Should_Throw()
-    {
-        reader.kaInput.text = "";
-
-        Assert.Throws<MissingK>(() =>
-        {
-            reader.GetUserInput();
-        });
     }
 
 
@@ -157,5 +147,56 @@ public class InputReaderTests
         var result = reader.GetAnimaStatus();
 
         Assert.AreEqual(0, result.Count);
+    }
+
+    private void SetInputValue(string ka, string kc, string ks, string ko, string kg, string t, string n, string obs, int method)
+    {
+
+        reader.kaInput = CreateInput(ka);
+        reader.kcInput = CreateInput(kc);
+        reader.ksInput = CreateInput(ks);
+        reader.koInput = CreateInput(ko);
+        reader.kgInput = CreateInput(kg);
+        reader.tInput = CreateInput(t);
+        reader.nInput = CreateInput(n);
+        reader.obsInput = CreateInput(obs);
+        reader.methodInput = CreateDropdown(method);
+    }
+
+    [TestCase("0.5", "0.5", "0.5", "0.5", "0.5", "0.01", "-10", "", 2, typeof(ErrorN))]
+    [TestCase("0.5", "0.5", "0.5", "0.5", "0.5", "-0.01", "10", "", 2, typeof(ErrorT))]
+    [TestCase("3.5", "0.5", "0.5", "0.5", "0.5", "0.01", "10", "", 2, typeof(ErrorK))]
+    [TestCase("0.5", "3.5", "0.5", "0.5", "0.5", "0.01", "10", "", 2, typeof(ErrorK))]
+    [TestCase("0.5", "0.5", "3.5", "0.5", "0.5", "0.01", "10", "", 2, typeof(ErrorK))]
+    [TestCase("0.5", "0.5", "0.5", "3.5", "0.5", "0.01", "10", "", 2, typeof(ErrorK))]
+    [TestCase("0.5", "0.5", "0.5", "0.5", "3.5", "0.01", "10", "", 2, typeof(ErrorK))]
+    [TestCase("0.5", "0.5", "0.5", "0.5", "0.5", "0.01", "", "", 2, typeof(MissingN))]
+    [TestCase("0.5", "0.5", "0.5", "0.5", "0.5", "", "10", "", 2, typeof(MissingT))]
+    [TestCase("", "0.5", "0.5", "0.5", "0.5", "0.01", "10", "", 2, typeof(MissingK))]
+    [TestCase("0.5", "", "0.5", "0.5", "0.5", "0.01", "10", "", 2, typeof(MissingK))]
+    [TestCase("0.5", "0.5", "", "0.5", "0.5", "0.01", "10", "", 2, typeof(MissingK))]
+    [TestCase("0.5", "0.5", "0.5", "", "0.5", "0.01", "10", "", 2, typeof(MissingK))]
+    [TestCase("0.5", "0.5", "0.5", "0.5", "", "0.01", "10", "", 2, typeof(MissingK))]
+    [TestCase("0.5", "0.5", "0.5", "0.5", "0.5", "0.01", "10", "(-900,100),50", 2, typeof(ErrorP))]
+    [TestCase("0.5", "0.5", "0.5", "0.5", "0.5", "0.01", "10", "(100,100),-50", 2, typeof(ErrorR))]
+    [TestCase("0.5", "0.5", "0.5", "0.5", "0.5", "0.01", "10", ",50", 2, typeof(MissingP))]
+    public void Functional_Test_Exception(string ka, string kc, string ks, string ko, string kg, string t, string n, string obs, int method, System.Type expectedException)
+    {
+        SetInputValue(ka, kc, ks, ko, kg, t, n, obs, method);
+
+        Assert.Throws(expectedException, () =>
+        {
+            reader.GetUserInput();
+        });
+    }
+
+    [TestCase("0.5", "0.5", "0.5", "0.5", "0.5", "0.01", "10", "", 2)]
+    public void Functional_Test_Obs(string ka, string kc, string ks, string ko, string kg, string t, string n, string obs, int method)
+    {
+        SetInputValue(ka, kc, ks, ko, kg, t, n, obs, method);
+
+        FlockingParameter result = reader.GetUserInput();
+
+        Assert.AreEqual(0, result.obs.Count);
     }
 }

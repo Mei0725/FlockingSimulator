@@ -92,7 +92,7 @@ public class MainController : MonoBehaviour
             string flockFile = saveSimulationData(res.flock, flockPrefix, method);
 
             // show result
-            simuResult.color = Color.green;
+            simuResult.color = new Color(0, 200, 0);
             simuResult.text = saveResult + animeFile + ";" + flockFile;
         } catch(Exception e)
         {

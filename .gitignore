@@ -283,6 +283,11 @@ src/Logs/
 src/Library/
 src/Temp/
 src/UserSettings/
+src/.vs/
+src/CodeCoverage/
+src/obj/
+src/Assets/TestDatas/Results/*
+!src/Assets/TestDatas/Results/.gitkeep
 *.csproj
 *.unityproj
 *.suo

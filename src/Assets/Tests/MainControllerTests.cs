@@ -148,7 +148,7 @@ public class MainControllerTests
     {
         controller.InitClicked();
 
-        Assert.AreEqual(Color.green, controller.initResult.color);
+        Assert.AreEqual(new Color(0, 200, 0), controller.initResult.color);
         Assert.IsTrue(controller.initResult.text.Contains("saved"));
     }
 
@@ -168,7 +168,7 @@ public class MainControllerTests
     {
         controller.CalculateClicked();
 
-        Assert.AreEqual(Color.green, controller.simuResult.color);
+        Assert.AreEqual(new Color(0, 200, 0), controller.simuResult.color);
     }
 
     [Test]
