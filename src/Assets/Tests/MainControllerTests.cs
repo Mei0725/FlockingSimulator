@@ -1,13 +1,8 @@
 using FlockingEntity;
 using NUnit.Framework;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using TMPro;
 using UnityEngine;
-using UnityEngine.TestTools;
-using static UnityEngine.Networking.UnityWebRequest;
-
 
 public class FakeInputReader : InputReader
 {

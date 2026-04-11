@@ -27,6 +27,9 @@ public class MainController : MonoBehaviour
     private string flockPrefix = "flock_";
     private string saveResult = "The result has been saved at ";
 
+    private Color successColor = new Color(0, 200, 0);
+    private Color errorColor = Color.red;
+
     void Awake()
     {
         AwakeInit();
@@ -59,11 +62,11 @@ public class MainController : MonoBehaviour
 
             string path = saveSimulationData(param, initPrefix);
 
-            initResult.color = Color.green;
+            initResult.color = successColor;
             initResult.text = saveResult + path;
         } catch (Exception e)
         {
-            initResult.color = Color.red;
+            initResult.color = errorColor;
             initResult.text = e.Message;
         }
     }
@@ -92,11 +95,11 @@ public class MainController : MonoBehaviour
             string flockFile = saveSimulationData(res.flock, flockPrefix, method);
 
             // show result
-            simuResult.color = new Color(0, 200, 0);
+            simuResult.color = successColor;
             simuResult.text = saveResult + animeFile + ";" + flockFile;
         } catch(Exception e)
         {
-            simuResult.color = Color.red;
+            simuResult.color = errorColor;
             simuResult.text = e.Message;
             Debug.LogWarning(e);
         }
@@ -112,7 +115,7 @@ public class MainController : MonoBehaviour
         }
         catch (Exception e)
         {
-            animeResult.color = Color.red;
+            animeResult.color = errorColor;
             animeResult.text = e.Message;
         }
     }
@@ -126,7 +129,7 @@ public class MainController : MonoBehaviour
         }
         catch (Exception e)
         {
-            chartResult.color = Color.red;
+            chartResult.color = errorColor;
             chartResult.text = e.Message;
         }
     }
