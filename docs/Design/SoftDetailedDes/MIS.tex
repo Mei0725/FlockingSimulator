@@ -55,6 +55,7 @@ urlcolor=cyan          % color of external links
 \midrule
 2026/03/25 & 1.0 & Initial MIS\\
 2026/04/07 & 1.1 & Modified based on the reviewer's feedback\\
+2026/04/12 & 1.2 & Modified based on the professor's feedback\\
 \bottomrule
 \end{tabularx}
 
@@ -63,6 +64,15 @@ urlcolor=cyan          % color of external links
 \section{Symbols, Abbreviations and Acronyms}
 
 See SRS Documentation at \href{https://mei0725.github.io/FlockingSimulator/SRS/SRS.pdf}{SRS.pdf}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l} 
+  \toprule		
+  \textbf{symbol} & \textbf{description}\\
+  \midrule 
+  T & A generic data type that the module will operate on.\\
+  \bottomrule
+\end{tabular}\\
 
 \newpage
 
@@ -195,13 +205,19 @@ FilesIO, InputReader, Dynamic, AnimationSimulator, ChartDrawer
 
 None.
 
+\subsubsection{Environment Variables}
+\begin{itemize}
+\item $screen$: A display device used to present error message or file's 
+saving path to the user. 
+\end{itemize}
+
 \subsubsection{Access Routine Semantics}
 
 \noindent InitClicked():
 \begin{itemize}
 \item transition: Read the input parameters from Input Reader Module, add the 
-initial positions of the flocking simulation, and save it using File I/O Module 
-by following steps. 
+initial positions at the FlockingStatus.starts, save it using File I/O Module 
+by following steps, and show the path in the $screen$. 
 \end{itemize}
 \textit{\# Get user input from InputReader and set it in the FlockingParameter object}
 
@@ -222,9 +238,9 @@ path := Save(parameters)
 \noindent CalculateClicked():
 
 \begin{itemize}
-\item transition: Read the input parameters from the path users input from 
-Input Reader Module, calculate the process of simulation using Dynamics Module, 
-and save the results using File I/O Module by following steps. 
+\item transition: Read the input parameters from Input Reader Module, calculate 
+the process of simulation using Dynamics Module, save the results using 
+File I/O Module by following steps, and show the path in the $screen$. 
 \end{itemize}
 \textit{\# Get the FlockingParameter parameters and method from InputReader}
 
@@ -318,6 +334,14 @@ N/A
 \item $ISEULER$ := ISEuler.
 \end{itemize}
 
+\subsubsection{Exported Types}
+
+\begin{itemize}
+\item \textit{\# Used to identify the name of variable that caused the error when generating error messages.}
+
+$\mathit{InputType} := \{KA, KS, KC, KO, KG, T, N, R, P\}$
+\end{itemize}
+
 \subsubsection{Exported Access Programs}
 
 \begin{center}
@@ -325,7 +349,7 @@ N/A
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\texttt{KVerify} & \texttt{input}: str, \texttt{type}: type & - & MissingK, ErrorK \\
+\texttt{KVerify} & \texttt{input}: str, \texttt{InputType}: type & - & MissingK, ErrorK \\
 \texttt{TVerify} & \texttt{input}: str & - & MissingT, ErrorT \\
 \texttt{NVerify} & \texttt{input}: str & - & MissingN, ErrorN \\
 \texttt{ObsVerify} & \texttt{input}: str & - & MissingP, MissingR, ErrorP, ErrorR \\
@@ -430,12 +454,12 @@ N/A
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\texttt{CalForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[], 
-\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter, 
+\texttt{CalForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: sequence of $\mathbb{R}^3$, 
+\texttt{vs}: sequence of $\mathbb{R}^3$, \texttt{info}: FlockingParameter, 
 \texttt{goal}: $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
-\texttt{CalAlignForce} & \texttt{i}: $\mathbb{R}$, \texttt{vs}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
-\texttt{CalCoheForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
-\texttt{CalSepaForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
+\texttt{CalAlignForce} & \texttt{i}: $\mathbb{R}$, \texttt{vs}: sequence of $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
+\texttt{CalCoheForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: sequence of $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
+\texttt{CalSepaForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: sequence of $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
 \texttt{CalObsAForce} & \texttt{p}: $\mathbb{R}^3$, \texttt{obs}: FlockingParameter.Obs & $\mathbb{R}^3$ & - \\
 \texttt{CalGoalForce} & \texttt{p}: $\mathbb{R}^3$, \texttt{v}: $\mathbb{R}^3$, \texttt{goal}: $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
 \hline
@@ -448,34 +472,34 @@ N/A
 
 \noindent CalForce(i, ps, vs, info, goal):
 \begin{itemize}
-\item output: out := $info.ka \cdot \mathbf{F}_{align} + info.kc \cdot \mathbf{F}_{cohe} + 
-info.ks \cdot \mathbf{F}_{sep} + info.ko \cdot \mathbf{F}_{obs} + 
-info.kg \cdot \mathbf{F}_{goal} $. 
+\item output: out := $\mathit{info}.ka \cdot CalAlignForce(i, vs) + \mathit{info}.kc \cdot CalCoheForce(i, ps) + 
+\mathit{info}.ks \cdot CalSepaForce(i, ps) + \mathit{info}.ko \cdot CalObsAForce(ps[i], info.obs) + 
+\mathit{info}.kg \cdot CalGoalForce(ps[i], vs[i], goal) $. 
 \end{itemize}
 
 \noindent CalAlignForce(i, vs):
 \begin{itemize}
-\item output: out := $\mathbf{F}_{align}=\frac{1}{|N_i|}\sum_{j\in N_i}\mathbf{vs}_j-\mathbf{vs}_i$. 
+\item output: out := $FAlign=\frac{1}{|N_i|}\sum_{j\in N_i}vs_j-vs_i$. 
 \end{itemize}
 
 \noindent CalCoheForce(i, ps):
 \begin{itemize}
-\item output: out := $\mathbf{F}_{cohe}=\frac{1}{|N_i|}\sum_{j\in N_i}\mathbf{ps}_j-\mathbf{ps}_i$. 
+\item output: out := $FCohe=\frac{1}{|N_i|}\sum_{j\in N_i}ps_j-ps_i$. 
 \end{itemize}
 
 \noindent CalSepaForce(i, ps):
 \begin{itemize}
-\item output: out := $\mathbf{F}_{sep}=\sum_{j\in N_i}\frac{\mathbf{ps}_i-\mathbf{ps}_j}{\|\mathbf{ps}_i-\mathbf{ps}_j\|^2}$. 
+\item output: out := $FSep=\sum_{j\in N_i}\frac{ps_i-ps_j}{\|ps_i-ps_j\|^2}$. 
 \end{itemize}
 
 \noindent CalObsAForce(p, obs):
 \begin{itemize}
-\item output: out := $\mathbf{F}_{obs}=\sum_{k\in obs}\frac{\mathbf{p}_i-\mathbf{obs}_k}{\|\mathbf{p}_i-\mathbf{obs}_k\|^2}$. 
+\item output: out := $FObs=\sum_{k\in obs}\frac{p_i-obs_k}{\|p_i-obs_k\|^2}$. 
 \end{itemize}
 
 \noindent CalGoalForce(p, v, goal):
 \begin{itemize}
-\item output: out := $\mathbf{F}_{goal}=v_{max}\frac{\mathbf{g}-\mathbf{p}_i}{\|\mathbf{g}-\mathbf{p}_i\|}-\mathbf{v}_i$. 
+\item output: out := $FGoal=vMax\cdot\frac{g-p}{\|g-p\|}-v$. 
 \end{itemize}
 
 ~\newpage
@@ -496,6 +520,18 @@ Force
 
 None.
 
+\subsubsection{Exported Types}
+
+\begin{itemize}
+\item \texttt{SimuRes}: the simulation result.
+\begin{itemize}
+  \item \texttt{velos}: sequence of $\mathbb{R}^3$, a set of velocitie for all 
+  agents at this time.
+  \item \texttt{positions}: sequence of $\mathbb{R}$, a set of position for all 
+  agents at this time.
+\end{itemize}
+\end{itemize}
+
 \subsubsection{Exported Access Programs}
 
 \begin{center}
@@ -503,15 +539,15 @@ None.
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\texttt{EEulerMethod} & \texttt{ps}: $\mathbb{R}^3$[], 
-\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter, 
-\texttt{goal}: $\mathbb{R}^3$ & $\mathbb{R}^3$[][] & - \\
-\texttt{RK4Method} & \texttt{ps}: $\mathbb{R}^3$[], 
-\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter, 
-\texttt{goal}: $\mathbb{R}^3$ & $\mathbb{R}^3$[][] & - \\
-\texttt{SIEulerMethod} & \texttt{ps}: $\mathbb{R}^3$[], 
-\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter, 
-\texttt{goal}: $\mathbb{R}^3$& $\mathbb{R}^3$[][] & - \\
+\texttt{EEulerMethod} & \texttt{ps}: sequence of $\mathbb{R}^3$, 
+\texttt{vs}: sequence of $\mathbb{R}^3$, \texttt{info}: FlockingParameter, 
+\texttt{goal}: $\mathbb{R}^3$ & SimuRes & - \\
+\texttt{RK4Method} & \texttt{ps}: sequence of $\mathbb{R}^3$, 
+\texttt{vs}: sequence of $\mathbb{R}^3$, \texttt{info}: FlockingParameter, 
+\texttt{goal}: $\mathbb{R}^3$ SimuRes & - \\
+\texttt{SIEulerMethod} & \texttt{ps}: sequence of $\mathbb{R}^3$, 
+\texttt{vs}: sequence of $\mathbb{R}^3$, \texttt{info}: FlockingParameter, 
+\texttt{goal}: $\mathbb{R}^3$& SimuRes & - \\
 \hline
 \end{tabular}
 \end{center}
@@ -566,10 +602,10 @@ N/A
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\texttt{CalMeanSpeed} & \texttt{vs}: $\mathbb{R}^3$[] & $\mathbb{R}$ & - \\
-\texttt{CalAlignMetrics} & \texttt{vs}: $\mathbb{R}^3$[] & $\mathbb{R}$ & - \\
-\texttt{CalCenter} & \texttt{ps}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
-\texttt{CalCohesion} & \texttt{ps}: $\mathbb{R}^3$[], \texttt{center}: $\mathbb{R}^3$ & $\mathbb{R}$ & - \\
+\texttt{CalMeanSpeed} & \texttt{vs}: sequence of $\mathbb{R}^3$ & $\mathbb{R}$ & - \\
+\texttt{CalAlignMetrics} & \texttt{vs}: sequence of $\mathbb{R}^3$ & $\mathbb{R}$ & - \\
+\texttt{CalCenter} & \texttt{ps}: sequence of $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
+\texttt{CalCohesion} & \texttt{ps}: sequence of $\mathbb{R}^3$, \texttt{center}: $\mathbb{R}^3$ & $\mathbb{R}$ & - \\
 \hline
 \end{tabular}
 \end{center}
@@ -579,23 +615,25 @@ N/A
 \subsubsection{Access Routine Semantics}
 
 \noindent CalMeanSpeed(vs):
+\textit{\# Compute the average magnitude of the velocities of all agents.}
 \begin{itemize}
-\item output: out := $\text{avg} = \frac{1}{|vs|} \sum_{i=1}^{|vs|} \left\lVert vs[i] \right\rVert$. 
+\item output: out := $\frac{1}{|vs|} \sum_{i=1}^{|vs|} \left\lVert vs[i] \right\rVert$. 
 \end{itemize}
 
 \noindent CalAlignMetrics(vs):
+\textit{\# Compute the average of the sum of the normalized velocities of all agents.}
 \begin{itemize}
-\item output: out := $\text{align} = \frac{1}{|vs|}\left\|\sum_{i=1}^{|vs|}\frac{vs[i]}{\|vs[i]\|}\right\|$. 
+\item output: out := $\frac{1}{|vs|}\left\|\sum_{i=1}^{|vs|}\frac{vs[i]}{\|vs[i]\|}\right\|$. 
 \end{itemize}
 
 \noindent CalCenter(ps):
 \begin{itemize}
-\item output: out := $\text{center} = \frac{1}{|ps|} \sum_{i=1}^{|ps|} ps[i]$. 
+\item output: out := $\frac{1}{|ps|} \sum_{i=1}^{|ps|} ps[i]$. 
 \end{itemize}
 
 \noindent CalCohesion(ps, center):
 \begin{itemize}
-\item output: out := $\text{cohe} =\frac{1}{|ps|} \sum_{i=1}^{|ps|} \left\| ps[i] - \text{center} \right\|$. 
+\item output: out := $\frac{1}{|ps|} \sum_{i=1}^{|ps|} \left\| ps[i] - \text{center} \right\|$. 
 \end{itemize}
 
 ~\newpage
@@ -651,7 +689,7 @@ every time steps using ODE Solver Module and Flocking Metrics Module by
 following steps. 
 \item exception: exc := ErrorMethod, if the ODE method is not defined.
 \end{itemize}
-\textit{\# Get the FlockingParameter object from MainController}
+\textit{\# Get the FlockingParameter object from InputReader by MainController}
 
 \textit{\# Loop until it is timeout}
 
@@ -693,9 +731,9 @@ end while
 
 \noindent ODEChoose():
 \begin{itemize}
-\item input: \texttt{method}: str, \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[], 
-\texttt{vs}: $\mathbb{R}^3$[], \texttt{info}: FlockingParameter. 
-\item output: $\mathbb{R}^3$[].
+\item input: \texttt{method}: str, \texttt{i}: $\mathbb{R}$, \texttt{ps}: sequence of $\mathbb{R}^3$, 
+\texttt{vs}: sequence of $\mathbb{R}^3$, \texttt{info}: FlockingParameter. 
+\item output: sequence of $\mathbb{R}^3$.
 \item exception: exc := ErrorMethod, if the ODE method is not defined.
 \item description: Compute the velocity and position at next time step by 
 specific method in ODESolver Module.
@@ -767,7 +805,7 @@ attributes are publicly accessible.
 
 \begin{itemize}
 \item \texttt{t}: $\mathbb{R}$, the length of time step. 
-\item \texttt{agents}: ($\mathbb{R}^3$[])[], the position of agents. 
+\item \texttt{agents}: sequence of (sequence of $\mathbb{R}^3$), the position of agents. 
 \item \texttt{obs}: array of Obs, the information of obstacles;
 \end{itemize}
 
@@ -795,9 +833,9 @@ attributes are publicly accessible.
 
 \begin{itemize}
 \item \texttt{t}: $\mathbb{R}$, the length of time step. 
-\item \texttt{meanSpeed}: $\mathbb{R}$[], the list of mean speed at every time step. 
-\item \texttt{alignMetric}: $\mathbb{R}$[], the list of align at every time step.
-\item \texttt{cohesion}: $\mathbb{R}$[], the list of cohesion at every time step.
+\item \texttt{meanSpeed}: sequence of $\mathbb{R}$, the list of mean speed at every time step. 
+\item \texttt{alignMetric}: sequence of $\mathbb{R}$, the list of align at every time step.
+\item \texttt{cohesion}: sequence of $\mathbb{R}$, the list of cohesion at every time step.
 \end{itemize}
 
 ~\newpage
@@ -830,7 +868,7 @@ MissingN, MissingT, MissingP, MissingR, ErrorK, ErrorN, ErrorT, ErrorP, ErrorR \
 \texttt{GetSimulateParam} & - & FlockingParameter & ErrorObject \\
 \texttt{GetMethod} & - & str & MissingMethod, ErrorMethod \\
 \texttt{GetAnimaStatus} & - & AnimationStatus & ErrorObject \\
-\texttt{GetFlockStatus} & - & FlockingStatus[] & ErrorObject \\
+\texttt{GetFlockStatus} & - & sequence of FlockingStatus & ErrorObject \\
 \hline
 \end{tabular}
 \end{center}
@@ -885,7 +923,7 @@ read from the user-specified path.
 
 \noindent GetAnimaStatus():
 \begin{itemize}
-\item output: \texttt{out} := AnimationStatus[], a list of AnimationStatus object 
+\item output: \texttt{out} := sequence of AnimationStatus, a list of AnimationStatus object 
 read from the user-specified paths.
 \item exception: 
 \begin{itemize}
@@ -896,7 +934,7 @@ read from the user-specified paths.
 
 \noindent GetFlockStatus():
 \begin{itemize}
-\item output: \texttt{out} := FlockingStatus[], a list of FlockingStatus object 
+\item output: \texttt{out} := sequence of FlockingStatus, a list of FlockingStatus object 
 read from the user-specified paths.
 \item exception: 
 \begin{itemize}
@@ -938,6 +976,11 @@ None.
 
 \subsection{Semantics}
 
+\subsubsection{Environment Variables}
+\begin{itemize}
+\item $file$: the contents of file at specific path. 
+\end{itemize}
+
 \subsubsection{Access Routine Semantics}
 
 \noindent Read(path):
@@ -951,6 +994,7 @@ None.
 
 \noindent Write(path, contents):
 \begin{itemize}
+\item transition: write the contents into $file$ at path.
 \item output: None.
 \end{itemize}
 
@@ -986,11 +1030,17 @@ None.
 
 \subsection{Semantics}
 
+\subsubsection{Environment Variables}
+\begin{itemize}
+\item $screen$: A display device used to present animation to the user. 
+\end{itemize}
+
 \subsubsection{Access Routine Semantics}
 
 \noindent PlaySimulation(anima):
 \begin{itemize}
-\item output: None, the animation will be displayed in the Application Window.
+\item transition: display the animation in the $screen$.
+\item output: None.
 \end{itemize}
 
 ~\newpage
@@ -1018,18 +1068,24 @@ None.
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\texttt{DrawChart} & \texttt{metrics}: FlockingStatus[] & - & - \\
+\texttt{DrawChart} & \texttt{metrics}: sequence of FlockingStatus & - & - \\
 \hline
 \end{tabular}
 \end{center}
 
 \subsection{Semantics}
 
+\subsubsection{Environment Variables}
+\begin{itemize}
+\item $screen$: A display device used to present charts to the user. 
+\end{itemize}
+
 \subsubsection{Access Routine Semantics}
 
 \noindent DrawChart(metrics):
 \begin{itemize}
-\item output: None, and the line charts will be displayed in the Application Window.
+\item transition: display line charts in the $screen$.
+\item output: None.
 \end{itemize}
 
 % ~\newpage
