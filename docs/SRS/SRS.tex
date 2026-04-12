@@ -1468,14 +1468,10 @@ This section lists the likely changes to be made to the software.
 \item[LC\refstepcounter{lcnum}\thelcnum\label{LC_ObsShapeChange}:]
 \aref{A_obsShape} - Obstacles may not be limited to circular shapes.
 
-\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_InfluenceRadiusChange}:]
-\aref{A_obsInfluence} - The influence radius of obstacles may change.
-
-\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_GoalChange}:]
-\aref{A_goalPosition} - The agents' goal positions may be different.
-
-\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_StartAreaChange}:]
-\aref{A_startPosition} - The initial generation area of agents may change.
+\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_FlockingParamChange}:]
+\aref{A_obsInfluence} - Environmental and behavioral simulation parameters(e.g., 
+goal positions, obstacle influence radius, initial generation area of agents) 
+may be changed.
 
 \end{itemize}
 
@@ -1540,9 +1536,7 @@ Rows represent items that trace to source items listed in columns.
 \iref{SemiImplicitEuler}         &X& & & & & & \\ \hline
 \iref{LC_EnvChange}              &X& & & & & & \\ \hline
 \lcref{LC_ObsShapeChange}        & & &X& & & & \\ \hline
-\lcref{LC_InfluenceRadiusChange} & & & &X& & & \\ \hline
-\lcref{LC_GoalChange}            & & & & &X& & \\ \hline
-\lcref{LC_StartAreaChange}       & & & & & &X& \\ \hline
+\lcref{LC_FlockingParamChange}   & & & &X&X&X& \\ \hline
 \lcref{LC_NoMeanMass}            & &X& & & & & \\ \hline
 \lcref{LC_agentHomogeneous}      & & & & & & &X\\
 \hline

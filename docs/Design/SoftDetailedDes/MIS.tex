@@ -137,7 +137,6 @@ The following table is taken directly from the Module Guide document for this pr
 & ODE Solver Module\\
 & Flocking Metrics Module\\
 & Dynamic Module \\
-& Obstacles Module \\
 & Flocking Parameter Module \\
 & Animation Status Module \\
 & Flocking Status Module \\
@@ -437,7 +436,7 @@ N/A
 \texttt{CalAlignForce} & \texttt{i}: $\mathbb{R}$, \texttt{vs}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
 \texttt{CalCoheForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
 \texttt{CalSepaForce} & \texttt{i}: $\mathbb{R}$, \texttt{ps}: $\mathbb{R}^3$[] & $\mathbb{R}^3$ & - \\
-\texttt{CalObsAForce} & \texttt{p}: $\mathbb{R}^3$, \texttt{obs}: Obstacle[] & $\mathbb{R}^3$ & - \\
+\texttt{CalObsAForce} & \texttt{p}: $\mathbb{R}^3$, \texttt{obs}: FlockingParameter.Obs & $\mathbb{R}^3$ & - \\
 \texttt{CalGoalForce} & \texttt{p}: $\mathbb{R}^3$, \texttt{v}: $\mathbb{R}^3$, \texttt{goal}: $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
 \hline
 \end{tabular}
@@ -704,32 +703,6 @@ specific method in ODESolver Module.
 
 ~\newpage
 
-\section{MIS of Obstacle Module} \label{mObs}
-
-\subsection{Module}
-
-Obstacle
-
-\subsection{Uses}
-
-N/A
-
-\subsection{Syntax}
-
-The class uses the default constructor provided by the language. All 
-attributes are publicly accessible.
-
-\subsection{Semantics}
-
-\subsubsection{State Variables}
-
-\begin{itemize}
-\item \texttt{p}: $\mathbb{R}^3$, the center of circle obstacle. 
-\item \texttt{r}: $\mathbb{R}$, the radius of circle obstacle. 
-\end{itemize}
-
-~\newpage
-
 \section{MIS of Flocking Parameter Module} \label{mFP}
 
 \subsection{Module}
@@ -744,6 +717,16 @@ N/A
 
 The class uses the default constructor provided by the language. All 
 attributes are publicly accessible.
+
+\subsubsection{Exported Types}
+
+\begin{itemize}
+\item \texttt{Obs}: the structure of obstacle.
+\begin{itemize}
+  \item \texttt{p}: $\mathbb{R}^3$, the center of circle obstacle.
+  \item \texttt{r}: $\mathbb{R}$, the radius of circle obstacle.
+\end{itemize}
+\end{itemize}
 
 \subsection{Semantics}
 
