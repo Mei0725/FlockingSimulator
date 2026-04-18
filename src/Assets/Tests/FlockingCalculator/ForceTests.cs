@@ -129,7 +129,7 @@ public class ForceTests
 
         Vector3 force = Force.calGoalSeekingForce(p, goal, v);
 
-        Assert.Less(force.x, 14f); // vMax = 14
+        Assert.Less(force.x, 20f); // vMax = 20
     }
 
     [Test]

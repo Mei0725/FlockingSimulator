@@ -65,7 +65,7 @@ public class ODESolverTests
         Assert.AreEqual(2, result[0].Count);
         Assert.AreEqual(2, result[1].Count);
 
-        // 基本数值 sanity check
+        // sanity check
         Assert.AreNotEqual(ps[0], result[1][0]);
     }
 

@@ -287,6 +287,16 @@ to be implemented.
 \item[Implemented By:] OS
 \end{description}
 
+\subsubsection{File I/O Module (\mref{mFile})}
+
+\begin{description}
+\item[Secrets:] The methods used to read data from files and write data to files.
+\item[Services:] Read data from files in string format and convert it to the 
+corresponding data types, or save data as JSON-formatted strings to files.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Library
+\end{description}
+
 \subsection{Behaviour-Hiding Module}
 
 \begin{description}
@@ -403,6 +413,16 @@ metric at each time step.
 \item[Type of Module:] Record
 \end{description}
 
+\subsubsection{Input Reader Module (\mref{mInput})}
+
+\begin{description}
+\item[Secrets:] The algorithm to read user inputs from the UI. 
+\item[Services:] Retrieve user inputs from the UI, verify those values and 
+assign them to the corresponding variables.
+\item[Implemented By:] \progname{}
+\item[Type of Module:] Abstract Object
+\end{description}
+
 \subsection{Software Decision Module}
 
 \begin{description}
@@ -414,26 +434,6 @@ metric at each time step.
   % Changes in these modules are more likely to be motivated by a desire to
   % improve performance than by externally imposed changes.
 \item[Implemented By:] --
-\end{description}
-
-\subsubsection{Input Reader Module (\mref{mInput})}
-
-\begin{description}
-\item[Secrets:] The algorithm to read user inputs from the UI. 
-\item[Services:] Retrieve user inputs from the UI, verify those values and 
-assign them to the corresponding variables.
-\item[Implemented By:] \progname{}
-\item[Type of Module:] Abstract Object
-\end{description}
-
-\subsubsection{File I/O Module (\mref{mFile})}
-
-\begin{description}
-\item[Secrets:] The methods used to read data from files and write data to files.
-\item[Services:] Read data from files in string format and convert it to the 
-corresponding data types, or save data as JSON-formatted strings to files.
-\item[Implemented By:] \progname{}
-\item[Type of Module:] Library
 \end{description}
 
 \subsubsection{Animation Simulator Module (\mref{mAnima})}

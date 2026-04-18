@@ -48,6 +48,7 @@
 2026/02/13 & 1.0 & Initial VnV plan.\\
 2026/04/07 & 1.1 & Modified based on the reviewer's feedback\\
 2026/04/17 & 1.2 & Added Test about Realism \\
+2026/04/18 & 1.3 & Finish the Unit Test Section \\
 \bottomrule
 \end{tabularx}
 
@@ -760,128 +761,240 @@ The traceability between test cases and requirements is shown in Table~\ref{tblT
 
 \section{Unit Test Description} \label{sec_unittest}
 
-This section should not be filled in until after the MIS (detailed design
-document) has been completed.
+Unit tests are used to verify the modules defined in the 
+\href{https://mei0725.github.io/FlockingSimulator/Design/SoftArchitecture/MG.pdf}{MG} and 
+\href{https://mei0725.github.io/FlockingSimulator/Design/SoftArchitecture/MIS.pdf}{MIS}. 
+For most modules, a special test file was created. Each module is tested for 
+expected, boundary, and exceptional cases. The tests are automatically 
+triggered by GitHub Actions whenever code in the \textbackslash src directory 
+is modified, helping ensure that existing functionality is not broken during 
+development.
 
-% \wss{Reference your MIS (detailed design document) and explain your overall
-% philosophy for test case selection.}  
+\subsection{Unit Testing Scope}
 
-% \wss{To save space and time, it may be an option to provide less detail in this section.  
-% For the unit tests you can potentially layout your testing strategy here.  That is, you 
-% can explain how tests will be selected for each module.  For instance, your test building 
-% approach could be test cases for each access program, including one test for normal behaviour 
-% and as many tests as needed for edge cases.  Rather than create the details of the input 
-% and output here, you could point to the unit testing code.  For this to work, you code 
-% needs to be well-documented, with meaningful names for all of the tests.}
+Unit tests are performed on all modules developed for \progname{}, except:
+\begin{enumerate}
+  \item Hardware-Hiding Module(M1): Its functionality depends on external 
+  hardware and runtime environment interactions, which are not easy to create 
+  unit test.
+  \item Flocking Parameter Module(M8): It is a simple record type ,and its 
+  functionality is already exercised and verified through other tests, so no 
+  separate unit test was created for it.
+  \item Animation Status Module(M9): It is a simple record type ,and its 
+  functionality is already exercised and verified through other tests, so no 
+  separate unit test was created for it.
+  \item Flocking Status Module(M10): It is a simple record type ,and its 
+  functionality is already exercised and verified through other tests, so no 
+  separate unit test was created for it.
+\end{enumerate}
 
-% \subsection{Unit Testing Scope}
+\subsubsection{Main Control Module [MG: M2]} \label{UTMain}
 
-% \wss{What modules are outside of the scope.  If there are modules that are
-%   developed by someone else, then you would say here if you aren't planning on
-%   verifying them.  There may also be modules that are part of your software, but
-%   have a lower priority for verification than others.  If this is the case,
-%   explain your rationale for the ranking of module importance.}
+This test verifies whether the prompt color displayed on the main UI is correct 
+and whether the associated methods are triggered properly.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/MainControllerTests.cs}{MainControllerTests}
+\begin{enumerate}
+  \item InitClicked\_Success\_Should\_Set\_Green\_Text
+  \item InitClicked\_Error\_Should\_Set\_Red\_Text
+  \item CalculateClicked\_Success
+  \item CalculateClicked\_Error
+  \item PlayAnimaClicked\_Should\_Call\_Simulator
+  \item PlayAnimaClicked\_Error
+  \item DrawClicked\_Should\_Call\_DrawChart
+  \item DrawClicked\_Error
+\end{enumerate}
 
-% \subsection{Tests for Functional Requirements}
+\subsubsection{Input Validation Module [MG: M3]} \label{UTInputValid}
 
-% \wss{Most of the verification will be through automated unit testing.  If
-%   appropriate specific modules can be verified by a non-testing based
-%   technique.  That can also be documented in this section.}
+This test verifies whether input parameters are validated correctly and whether 
+the appropriate exceptions are thrown.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/IO/InputValidationTests.cs}{InputValidationTests}
+\begin{enumerate}
+  \item KVerify\_Valid\_Should\_Return\_value
+  \item KVerify\_Empty\_Should\_Throw\_MissingK
+  \item KVerify\_OutOfRange\_Should\_Throw\_ErrorK
+  \item NVerify\_Valid
+  \item NVerify\_Invalid\_Should\_Throw\_ErrorN
+  \item TVerify\_Valid
+  \item TVerify\_Invalid\_Should\_Throw\_ErrorT
+  \item ObsVerify\_Valid\_Input
+  \item ObsVerify\_MissingRadius\_Should\_Throw
+  \item ObsVerify\_InvalidPosition\_Should\_Throw
+  \item MethodVerify\_Valid
+  \item MethodVerify\_Empty\_Should\_Throw
+  \item MethodVerify\_Invalid\_Should\_Throw
+  \item PathVerify\_Valid
+  \item PathVerify\_Empty\_Should\_Throw
+\end{enumerate}
 
-% \subsubsection{Module 1}
+\subsubsection{Force Module [MG: M4]} \label{UTForce}
 
-% \wss{Include a blurb here to explain why the subsections below cover the module.
-%   References to the MIS would be good.  You will want tests from a black box
-%   perspective and from a white box perspective.  Explain to the reader how the
-%   tests were selected.}
+This test verifies whether the internal flocking force calculations are 
+correct in very simple single-agent or two-agent scenarios.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/FlockingCalculator/ForceTests.cs}{ForceTests}
+\begin{enumerate}
+  \item CalAlignForce\_Should\_Point\_To\_Other\_Velocity
+  \item CalAlignForce\_Single\_Should\_Be\_Zero
+  \item CalCohesionForce\_Should\_Point\_To\_Center
+  \item CalCohesionForce\_Single\_Should\_Be\_Zero
+  \item CalSeparationForce\_Should\_Repel
+  \item CalSeparationForce\_Single\_Should\_Be\_Zero
+  \item CalObsAvoidForce\_Should\_Repel\_From\_Obstacle
+  \item CalObsAvoidForce\_NoObstacle\_Should\_Be\_Zero
+  \item CalGoalSeekingForce\_Should\_Point\_To\_Goal
+  \item CalGoalSeekingForce\_WithVelocity\_Should\_Adjust
+  \item CalForce\_Should\_Return\_Combined\_Force
+\end{enumerate}
 
-% \begin{enumerate}
+\subsubsection{ODEs Solver Module [MG: M5]} \label{UTSolver}
 
-% \item{test-id1\\}
+This test verifies whether the ODE solver output format is correct and whether 
+certain special inputs are handled without errors.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/FlockingCalculator/ODESolverTests.cs}{ODESolverTests}
+\begin{enumerate}
+  \item EEulerMethod\_Should\_Return\_Correct\_Size
+  \item SIEulerMethod\_Should\_Update\_Position\_And\_Velocity
+  \item RK4Method\_Should\_Return\_Valid\_Output
+  \item EEuler\_Should\_Not\_Throw
+\end{enumerate}
 
-% Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-%   be automatic}
-					
-% Initial State: 
-					
-% Input: 
-					
-% Output: \wss{The expected result for the given inputs}
+\subsubsection{Flocking Metrics Module [MG: M6]} \label{UTFlockParam}
 
-% Test Case Derivation: \wss{Justify the expected value given in the Output field}
+This test verifies whether flocking metrics are calculated correctly in very 
+simple single-agent or two-agent scenarios.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/FlockingCalculator/FlockingMetricsTests.cs}{FlockingMetricsTests}
+\begin{enumerate}
+  \item CalMeanSpeed\_Should\_Return\_Correct\_Average
+  \item CalAlignMetric\_SameDirection\_Should\_Be\_1
+  \item CalAlignMetric\_OppositeDirection\_Should\_Be\_0
+  \item CalCenter\_Should\_Return\_Correct\_Center
+  \item CalCohesion\_Should\_Calculate\_Average\_Distance
+  \item CalCohesion\_WithCenter\_Should\_Match
+  \item CalMeanSpeed\_SingleElement
+\end{enumerate}
 
-% How test will be performed: 
-					
-% \item{test-id2\\}
+\subsubsection{Dynamics Module [MG: M7]} \label{UTDyna}
 
-% Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-%   be automatic}
-					
-% Initial State: 
-					
-% Input: 
-					
-% Output: \wss{The expected result for the given inputs}
+This test verifies whether the output format is correct and whether some 
+exceptional inputs can be handled properly.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/FlockingCalculator/DynamicsTests.cs}{DynamicsTests}
+\begin{enumerate}
+  \item FlockSimulation\_Should\_Return\_Result
+  \item FlockSimulation\_Should\_Initialize\_Animation
+  \item FlockSimulation\_Should\_Generate\_Metrics
+  \item FlockSimulation\_Should\_Run\_EEuler
+  \item FlockSimulation\_Should\_Run\_RK4
+  \item FlockSimulation\_Should\_Run\_ISEULER
+  \item FlockSimulation\_Should\_Handle\_Invalid\_Method
+  \item FlockSimulation\_Should\_Append\_Positions
+\end{enumerate}
 
-% Test Case Derivation: \wss{Justify the expected value given in the Output field}
+\subsubsection{Input Reader Module [MG: M11]} \label{UTReader}
 
-% How test will be performed: 
+This test verifies whether valid inputs can be correctly read from the UI.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/IO/InputReaderTests.cs}{InputReaderTests}
+\begin{enumerate}
+  \item GetUserInput\_Should\_Return\_Valid\_Object
+  \item GetSimulateParam\_InvalidPath\_Should\_Throw
+  \item GetMethod\_Should\_Map\_Correctly
+  \item GetAnimaStatus\_Should\_Read\_Multiple\_Files
+  \item GetFlockStatus\_Should\_Read\_Files
+  \item GetAnimaStatus\_Empty\_Should\_Return\_Empty\_List
+\end{enumerate}
 
-% \item{...\\}
-    
-% \end{enumerate}
+\subsubsection{File I/O Module [MG: M12]} \label{UTIO}
 
-% \subsubsection{Module 2}
+This test verifies whether files can be written and read successfully, as well 
+as whether missing-file exceptions are handled properly.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/IO/FilesIOTests.cs}{FilesIOTests}
+\begin{enumerate}
+  \item Write\_Should\_Create\_File
+  \item Write\_Should\_Contain\_Correct\_JSON
+  \item Read\_Should\_Return\_Data
+  \item Read\_Should\_Throw\_When\_File\_Not\_Found
+\end{enumerate}
 
-% ...
+\subsubsection{Animation Simulator Module [MG: M13]} \label{UTAnime}
 
-% \subsection{Tests for Nonfunctional Requirements}
+This test verifies whether the animation runs correctly, and whether the 
+number of agents and obstacle rendering are correct.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/Visualization/AnimationSimulatorTests.cs}{AnimationSimulatorTests}
+\begin{enumerate}
+  \item PlaySimulation\_SingleAnimation\_StartsCorrectly
+  \item PlaySimulation\_WhenAlreadyPlaying\_ShouldNotStart
+  \item PlaySimulation\_MultipleAnimations\_EnableLabels
+  \item Simulation\_EmptyAgents\_ShouldExitEarly
+  \item DrawObstacles\_ShouldCreateGameObjects
+\end{enumerate}
 
-% \wss{If there is a module that needs to be independently assessed for
-%   performance, those test cases can go here.  In some projects, planning for
-%   nonfunctional tests of units will not be that relevant.}
+\subsubsection{Chart Drawer Module [MG: M14]} \label{UTChart}
 
-% \wss{These tests may involve collecting performance data from previously
-%   mentioned functional tests.}
+This test verifies whether charts are displayed correctly, whether the number 
+of plotted lines is correct, and whether reading multiple input files works 
+properly.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/Visualization/ChartDrawerTests.cs}{ChartDrawerTests}
+\begin{enumerate}
+  \item Start\_Should\_Initialize\_Charts
+  \item DrawChart\_Should\_Not\_Throw
+  \item DrawChart\_Should\_Add\_Series
+  \item DrawChart\_MultipleInputs\_Should\_Work
+\end{enumerate}
 
-% \subsubsection{Module ?}
-		
-% \begin{enumerate}
+\subsection{Tests for Functional Requirements}
 
-% \item{test-id1\\}
+This module introduces the test cases for Functional Requirements implemented 
+using the Unity Test Framework.
 
-% Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-%   be automatic}
-					
-% Initial State: 
-					
-% Input/Condition: 
-					
-% Output/Result: 
-					
-% How test will be performed: 
-					
-% \item{test-id2\\}
+\subsubsection{Input Test[\ref{inputTest}]} \label{FTInput}
 
-% Type: Functional, Dynamic, Manual, Static etc.
-					
-% Initial State: 
-					
-% Input: 
-					
-% Output: 
-					
-% How test will be performed: 
+This test verifies various valid and invalid input parameters and checks 
+whether the correct exceptions are thrown.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/IO/InputReaderTests.cs}{InputReaderTests}
+\begin{enumerate}
+  \item Functional\_Test\_Exception
+  \item Functional\_Test\_Obs
+\end{enumerate}
 
-% \end{enumerate}
+\subsubsection{Flocking Test[\ref{motionTest}, \ref{boundaryTest}, \ref{methodTest}]} \label{FTFlocking}
 
-% \subsubsection{Module ?}
+This test verifies whether multiple flocking simulation scenarios with 
+predictable outputs behave as expected.
+See \href{https://github.com/Mei0725/FlockingSimulator/blob/main/src/Assets/Tests/FunctionalTest/FunctionalTest.cs}{FunctionalTest}
+\begin{enumerate}
+  \item Single\_Agent\_Verify
+  \item Symmetry\_And\_NoSepa\_Verify
+  \item MaxVelo\_And\_DiffODE\_Verify
+\end{enumerate}
 
-% ...
+\subsection{Tests for Nonfunctional Requirements}
 
-% \subsection{Traceability Between Test Cases and Modules}
+Unit testing the non-functional requirements is beyond the scope. Tests
+related to non-functional requirements of system are introduced in 
+section \ref{test_nonfunc}.
 
-% \wss{Provide evidence that all modules have been considered.}
+\subsection{Traceability Between Test Cases and Modules}
+
+\begin{table}[h!]
+\caption{Traceability Between Test Cases and Modules} \label{tblTraceToModule} 
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+	& M2 & M3 & M4 & M5 & M6 & M7 & M11 & M12 & M13 & M14 \\
+\hline
+Test \ref{UTMain}           &X& & & & & & & & &\\ \hline
+Test \ref{UTInputValid}     & &X& & & & & & & &\\ \hline
+Test \ref{UTForce}          & & &X& & & & & & &\\ \hline
+Test \ref{UTSolver}         & & & &X& & & & & &\\ \hline
+Test \ref{UTFlockParam}     & & & & &X& & & & &\\ \hline
+Test \ref{UTDyna}           & & & & & &X& & & &\\ \hline
+Test \ref{UTReader}         & & & & & & &X& & &\\ \hline
+Test \ref{UTIO}             & & & & & & & &X& &\\ \hline
+Test \ref{UTAnime}          & & & & & & & & &X&\\ \hline
+Test \ref{UTChart}          & & & & & & & & & &X\\ \hline
+Test \ref{FTInput}          & &X& & & & & & & &\\ \hline
+Test \ref{FTFlocking}       & & &X&X&X&X& & & &\\ \hline
+\end{tabular}
+\end{table}
 				
 \bibliographystyle{plainnat}
 
