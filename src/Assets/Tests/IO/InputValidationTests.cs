@@ -58,7 +58,7 @@ public class InputValidationTests
     {
         Assert.Throws<ErrorT>(() =>
         {
-            InputValidation.TVerify("1");
+            InputValidation.TVerify("10");
         });
     }
 
