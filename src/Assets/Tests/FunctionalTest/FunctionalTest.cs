@@ -56,7 +56,7 @@ public class FunctionalTest
     }
 
     [Test]
-    public void FunctionalTest1()
+    public void Single_Agent_Verify()
     {
         FlockingParameter param = ReadFile<FlockingParameter>(ft1FileName);
         var res = dynamics.FlockSimulation(param, InputValidation.SIEULER);
@@ -67,7 +67,7 @@ public class FunctionalTest
     }
 
     [Test]
-    public void FunctionalTest2And3()
+    public void Symmetry_And_NoSepa_Verify()
     {
         FlockingStatus flock2 = CheckSymmetry(ft2FileName), flock3 = CheckSymmetry(ft3FileName);
         List<float> cohe2 = flock2.cohesion, cohe3 = flock3.cohesion;
@@ -99,7 +99,7 @@ public class FunctionalTest
     }
 
     [Test]
-    public void FunctionalTest4And5()
+    public void MaxVelo_And_DiffODE_Verify()
     {
         Diffs diffs4 = CheckMaxVelocity(ft4FileName, 100), diffs5 = CheckMaxVelocity(ft5FileName, 10), diffs6 = SaveDiff(ft6FileName, 1);
 
