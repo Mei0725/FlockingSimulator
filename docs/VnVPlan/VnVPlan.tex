@@ -47,6 +47,7 @@
 \midrule
 2026/02/13 & 1.0 & Initial VnV plan.\\
 2026/04/07 & 1.1 & Modified based on the reviewer's feedback\\
+2026/04/17 & 1.2 & Added Test about Realism \\
 \bottomrule
 \end{tabularx}
 
@@ -638,34 +639,10 @@ $N$ & ${\Delta t}\text{(s)}$ & $k_a$ & $k_c$ & $k_s$ & $k_o$ & $k_g$ & $\mathbf{
 The nonfunctional requirements can be found in Section 5.2 of the \citet{SRS}. 
 All four nonfunctional requirements will be addressed in the following sections.
 
-\subsubsection{Correctness} \label{realismTest}
+\subsubsection{Correctness} \label{correctTest}
 
 The correctness of the software implementation can be verified through the 
-functional test cases in \ref{test_func} and the unit tests. Requirements 
-related to realism will be validated using \ref{realismTestCase} described 
-below.
-		
-\paragraph{Realism Test} \label{realismTestCase}
-
-\begin{enumerate}
-
-\item{test-realism\\}
-
-Type: Manual with classmates and professor, consisting of 6-8 volunteers from 
-the CAS 741 class.
-					
-Initial State: The software is set up and ready for testing, and a set of 
-relatively appropriate input parameters has already been identified.
-					
-Input/Condition: None.
-					
-Output/Result: Survey about the user experience with software.
-					
-How test will be performed: After showing the using demo of software, users will 
-be asked to complete a survey(~\ref{realismSurvey}) based on their experience to 
-evaluate the realism of the simulated flocking animation.
-
-\end{enumerate}
+functional test cases in \ref{test_func} and the unit tests.
 
 \subsubsection{Verifiability} \label{verifyTest}
 
@@ -696,6 +673,34 @@ Output/Result: Survey about the user experience with software.
 How test will be performed: After using the software, users will be asked to 
 complete a survey(~\ref{usablitySurvey}) based on their experience to 
 evaluate the usability of the software.
+
+\end{enumerate}
+
+\subsubsection{Realism} \label{realismTest}
+
+Realism shows if this software generate a realistic flocking simulation 
+animation. Realism is something that is difficult to quantify with data, so 
+it needs users' feedback.
+		
+\paragraph{Realism Test} \label{realismTestCase}
+
+\begin{enumerate}
+
+\item{test-realism\\}
+
+Type: Manual with classmates and professor, consisting of 6-8 volunteers from 
+the CAS 741 class.
+					
+Initial State: The software is set up and ready for testing, and a set of 
+relatively appropriate input parameters has already been identified.
+					
+Input/Condition: None.
+					
+Output/Result: Survey about the user experience with software.
+					
+How test will be performed: After showing the using demo of software, users will 
+be asked to complete a survey(~\ref{realismSurvey}) based on their experience to 
+evaluate the realism of the simulated flocking animation.
 
 \end{enumerate}
 
@@ -737,18 +742,19 @@ The traceability between test cases and requirements is shown in Table~\ref{tblT
 \begin{table}[h!]
 \caption{Traceability Between Test Cases And Requirements} \label{tblTrace} 
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
-	& R1 & R2 & R3 & R4 & R5 & R6 & R7 & NFR1 & NFR2 & NFR3 & NFR4 \\
+	& R1 & R2 & R3 & R4 & R5 & R6 & R7 & NFR1 & NFR2 & NFR3 & NFR4 & NFR5 \\
 \hline
-\ref{inputTest}                &X&X& & & & & & & & & \\ \hline
-\ref{motionTest}               & & & &X&X&X& &X& & & \\ \hline
-\ref{boundaryTest}             & & & & &X& &X&X& & & \\ \hline
-\ref{methodTest}               & & &X& &X& &X& & & & \\ \hline
-\ref{realismTest}              & & & & & & & &X& & & \\ \hline
-\ref{verifyTest}               & & & & & & & & &X& & \\ \hline
-\ref{usabilityTest}            & & & & & & & & & &X& \\ \hline
-\ref{maintainTest}             & & & & & & & & & & &X\\ \hline
+\ref{inputTest}                &X&X& & & & & & & & & & \\ \hline
+\ref{motionTest}               & & & &X&X&X& &X& & & & \\ \hline
+\ref{boundaryTest}             & & & & &X& &X&X& & & & \\ \hline
+\ref{methodTest}               & & &X& &X& &X& & & & & \\ \hline
+\ref{correctTest}              & & & & & & & &X& & & & \\ \hline
+\ref{verifyTest}               & & & & & & & & &X& & & \\ \hline
+\ref{usabilityTest}            & & & & & & & & & &X& & \\ \hline
+\ref{realismTest}              & & & & & & & & & & &X& \\ \hline
+\ref{maintainTest}             & & & & & & & & & & & &X\\ \hline
 \end{tabular}
 \end{table}
 

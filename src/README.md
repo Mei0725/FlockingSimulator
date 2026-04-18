@@ -24,7 +24,8 @@ Project/
 │   ├── Scripts/                # The project main logic
 │   ├── Settings/               # The project data configurations
 │   ├── TextMesh Pro/           # The font resources used by UI
-│   └── UnitTests/              # The project test logic and functional test data
+│   └── TestDatas/              # The initial data used in functional requirement tests
+│   └── Tests/                  # The project test logic and functional test data
 ├── Packages/                   # Packages the project use
 ├── ProjectSettings/            # Engine-wide configuration settings
 └── README.md

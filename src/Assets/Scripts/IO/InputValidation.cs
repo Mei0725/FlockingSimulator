@@ -21,7 +21,7 @@ public static class InputValidation
     private static int NMin = 1;
     private static int NMax = 5000;
     private static float tMin = 0.005f;
-    private static float tMax = 0.1f;
+    private static float tMax = 1.0f;
     private static float pMin = -500;
     private static float pMax = 1000;
     private static float rMin = 1;
